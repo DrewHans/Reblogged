@@ -1,6 +1,6 @@
 namespace Blog.Core
 {
-    public interface IFileDatabaseWriter
+    public interface IFileWriter
     {
         void Write(string filepath, bool appendToFile, string value);
     }

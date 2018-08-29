@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Blog.Core
 {
-    public class FileDatabaseReader : IFileDatabaseReader
+    public class FileReader : IFileReader
     {
         public string Read(string filepath)
         {

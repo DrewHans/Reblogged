@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Blog.Core
 {
-    public class FileDatabaseWriter : IFileDatabaseWriter
+    public class FileWriter : IFileWriter
     {
         public void Write(string filepath, bool appendToFile, string value)
         {

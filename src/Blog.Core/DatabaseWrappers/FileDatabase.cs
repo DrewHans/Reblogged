@@ -1,25 +1,22 @@
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Blog.Core
 {
     public class FileDatabase<T> : IFileDatabase<T>
     {
-        private readonly IFileDatabaseReader _fileDatabaseReader;
-        private readonly IFileDatabaseWriter _fileDatabaseWriter;
+        private readonly IFileReader _fileReader;
+        private readonly IFileWriter _fileWriter;
 
-        public FileDatabase(IFileDatabaseReader fileDatabaseReader,
-            IFileDatabaseWriter fileDatabaseWriter)
+        public FileDatabase(IFileReader fileReader, IFileWriter fileWriter)
         {
-            _fileDatabaseReader = fileDatabaseReader;
-            _fileDatabaseWriter = fileDatabaseWriter;
+            _fileReader = fileReader;
+            _fileWriter = fileWriter;
         }
 
         public List<T> ReadDatabase(string filePath)
         {
-            var fileContents = _fileDatabaseReader.Read(filePath);
+            var fileContents = _fileReader.Read(filePath);
             if (fileContents == null)
                 return new List<T>();
             var listOfT = JsonConvert.DeserializeObject<List<T>>(fileContents);
@@ -31,7 +28,7 @@ namespace Blog.Core
             if (listOfT == null || listOfT.Count == 0)
                 return;
             var value = JsonConvert.SerializeObject(listOfT);
-            _fileDatabaseWriter.Write(filePath, appendToFile, value);
+            _fileWriter.Write(filePath, appendToFile, value);
         }
     }
 }

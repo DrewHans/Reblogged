@@ -10,15 +10,15 @@ namespace Blog.Core.Test
 {
     public class FileDatabaseTests : IDisposable
     {
-        private MockIFileDatabaseReader _mockFileDatabaseReader;
-        private MockIFileDatabaseWriter _mockFileDatabaseWriter;
+        private MockIFileReader _mockFileReader;
+        private MockIFileWriter _mockFileWriter;
         private readonly FileDatabase<FakeBlogModel> _fileDatabase;
 
         public FileDatabaseTests()
         {
-            _mockFileDatabaseReader = new MockIFileDatabaseReader();
-            _mockFileDatabaseWriter = new MockIFileDatabaseWriter();
-            _fileDatabase = new FileDatabase<FakeBlogModel>(_mockFileDatabaseReader, _mockFileDatabaseWriter);
+            _mockFileReader = new MockIFileReader();
+            _mockFileWriter = new MockIFileWriter();
+            _fileDatabase = new FileDatabase<FakeBlogModel>(_mockFileReader, _mockFileWriter);
         }
 
         public void Dispose() { }
@@ -29,11 +29,11 @@ namespace Blog.Core.Test
         public void ReadDatabase_FileContentsAreNullOrEmpty_ReturnsEmptyList(string stub_fileContents)
         {
             var param_filePath = "path/to/the/file.json";
-            _mockFileDatabaseReader.StubRead(stub_fileContents);
+            _mockFileReader.StubRead(stub_fileContents);
             var expected = new List<FakeBlogModel>();
             var returned = _fileDatabase.ReadDatabase(param_filePath);
             Assert.Equal(expected, returned);
-            _mockFileDatabaseReader.VerifyRead(param_filePath);
+            _mockFileReader.VerifyRead(param_filePath);
         }
 
         [Fact]
@@ -43,11 +43,11 @@ namespace Blog.Core.Test
             var stub_fakeBlogModel = new FakeBlogModel();
             var stub_listOfT = new List<FakeBlogModel> { stub_fakeBlogModel };
             var stub_fileContents = JsonConvert.SerializeObject(stub_listOfT);
-            _mockFileDatabaseReader.StubRead(stub_fileContents);
+            _mockFileReader.StubRead(stub_fileContents);
             var expected = JsonConvert.DeserializeObject<List<FakeBlogModel>>(stub_fileContents);
             var returned = _fileDatabase.ReadDatabase(param_filePath);
             AssertListOfFakeBlogModelAreEqual(expected, returned);
-            _mockFileDatabaseReader.VerifyRead(param_filePath);
+            _mockFileReader.VerifyRead(param_filePath);
         }
 
         [Theory]
@@ -59,7 +59,7 @@ namespace Blog.Core.Test
             var param_appendToFile = stub_appendToFile;
             List<FakeBlogModel> param_listOfT = null;
             _fileDatabase.WriteDatabase(param_filePath, param_appendToFile, param_listOfT);
-            _mockFileDatabaseWriter.VerifyWriteNotCalled();
+            _mockFileWriter.VerifyWriteNotCalled();
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace Blog.Core.Test
             var param_appendToFile = stub_appendToFile;
             var param_listOfT = new List<FakeBlogModel>();
             _fileDatabase.WriteDatabase(param_filePath, param_appendToFile, param_listOfT);
-            _mockFileDatabaseWriter.VerifyWriteNotCalled();
+            _mockFileWriter.VerifyWriteNotCalled();
         }
 
         [Theory]
@@ -85,7 +85,7 @@ namespace Blog.Core.Test
             var param_listOfT = new List<FakeBlogModel> { stub_fakeBlogModel };
             var expected_value = JsonConvert.SerializeObject(param_listOfT);
             _fileDatabase.WriteDatabase(param_filePath, param_appendToFile, param_listOfT);
-            _mockFileDatabaseWriter.VerifyWrite(param_filePath, param_appendToFile, expected_value);
+            _mockFileWriter.VerifyWrite(param_filePath, param_appendToFile, expected_value);
         }
 
         private void AssertListOfFakeBlogModelAreEqual(List<FakeBlogModel> expected, List<FakeBlogModel> actual)

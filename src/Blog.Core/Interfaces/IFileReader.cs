@@ -1,6 +1,6 @@
 namespace Blog.Core
 {
-    public interface IFileDatabaseReader
+    public interface IFileReader
     {
         string Read(string filepath);
     }
