@@ -8,17 +8,17 @@ using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class FileDatabaseTests : IDisposable
+    public class FileDataAccessTests : IDisposable
     {
         private MockIFileReader _mockFileReader;
         private MockIFileWriter _mockFileWriter;
-        private readonly FileDatabase<FakeBlogModel> _fileDatabase;
+        private readonly FileDataAccess<FakeBlogModel> _fileDataAccess;
 
-        public FileDatabaseTests()
+        public FileDataAccessTests()
         {
             _mockFileReader = new MockIFileReader();
             _mockFileWriter = new MockIFileWriter();
-            _fileDatabase = new FileDatabase<FakeBlogModel>(_mockFileReader, _mockFileWriter);
+            _fileDataAccess = new FileDataAccess<FakeBlogModel>(_mockFileReader, _mockFileWriter);
         }
 
         public void Dispose() { }
@@ -30,7 +30,7 @@ namespace Blog.Core.Test
             var param_entity = new FakeBlogModel();
             var expected_appendToFile = false;
             var expected_value = "";
-            _fileDatabase.ClearDatabase(param_filePath);
+            _fileDataAccess.ClearDatabase(param_filePath);
             _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
         }
 
@@ -39,7 +39,7 @@ namespace Blog.Core.Test
         {
             var param_filePath = "path/to/the/file.json";
             List<FakeBlogModel> param_listOfEntity = null;
-            _fileDatabase.OverwriteDatabase(param_filePath, param_listOfEntity);
+            _fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
             _mockFileWriter.VerifyWriteNotCalled();
         }
 
@@ -48,7 +48,7 @@ namespace Blog.Core.Test
         {
             var param_filePath = "path/to/the/file.json";
             var param_listOfEntity = new List<FakeBlogModel>();
-            _fileDatabase.OverwriteDatabase(param_filePath, param_listOfEntity);
+            _fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
             _mockFileWriter.VerifyWriteNotCalled();
         }
 
@@ -60,7 +60,7 @@ namespace Blog.Core.Test
             var param_listOfEntity = new List<FakeBlogModel> { stub_fakeBlogModel };
             var expected_appendToFile = false;
             var expected_value = JsonConvert.SerializeObject(param_listOfEntity);
-            _fileDatabase.OverwriteDatabase(param_filePath, param_listOfEntity);
+            _fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
             _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
         }
 
@@ -72,7 +72,7 @@ namespace Blog.Core.Test
             var param_filePath = "path/to/the/file.json";
             _mockFileReader.StubRead(stub_fileContents);
             var expected = new List<FakeBlogModel>();
-            var returned = _fileDatabase.ReadDatabase(param_filePath);
+            var returned = _fileDataAccess.ReadDatabase(param_filePath);
             Assert.Equal(expected, returned);
             _mockFileReader.VerifyRead(param_filePath);
         }
@@ -86,7 +86,7 @@ namespace Blog.Core.Test
             var stub_fileContents = JsonConvert.SerializeObject(stub_listOfEntity);
             _mockFileReader.StubRead(stub_fileContents);
             var expected = JsonConvert.DeserializeObject<List<FakeBlogModel>>(stub_fileContents);
-            var returned = _fileDatabase.ReadDatabase(param_filePath);
+            var returned = _fileDataAccess.ReadDatabase(param_filePath);
             AssertListOfFakeBlogModelAreEqual(expected, returned);
             _mockFileReader.VerifyRead(param_filePath);
         }
@@ -96,7 +96,7 @@ namespace Blog.Core.Test
         {
             var param_filePath = "path/to/the/file.json";
             FakeBlogModel param_entity = null;
-            _fileDatabase.WriteToDatabase(param_filePath, param_entity);
+            _fileDataAccess.WriteToDatabase(param_filePath, param_entity);
             _mockFileWriter.VerifyWriteNotCalled();
             _mockFileReader.VerifyReadNotCalled();
         }
@@ -109,7 +109,7 @@ namespace Blog.Core.Test
             var expected_appendToFile = false;
             var expected_listOfEntity = new List<FakeBlogModel> { param_entity };
             var expected_value = JsonConvert.SerializeObject(expected_listOfEntity);
-            _fileDatabase.WriteToDatabase(param_filePath, param_entity);
+            _fileDataAccess.WriteToDatabase(param_filePath, param_entity);
             _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
             _mockFileReader.VerifyRead(param_filePath);
         }
@@ -127,7 +127,7 @@ namespace Blog.Core.Test
             var expected_appendToFile = false;
             var expected_listOfEntity = stub_listOfEntity;
             var expected_value = JsonConvert.SerializeObject(expected_listOfEntity);
-            _fileDatabase.WriteToDatabase(param_filePath, param_entity);
+            _fileDataAccess.WriteToDatabase(param_filePath, param_entity);
             _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
             _mockFileReader.VerifyRead(param_filePath);
         }
@@ -137,7 +137,7 @@ namespace Blog.Core.Test
         {
             var param_filePath = "path/to/the/file.json";
             List<FakeBlogModel> param_listOfEntity = null;
-            _fileDatabase.WriteToDatabase(param_filePath, param_listOfEntity);
+            _fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
             _mockFileWriter.VerifyWriteNotCalled();
             _mockFileReader.VerifyReadNotCalled();
         }
@@ -147,7 +147,7 @@ namespace Blog.Core.Test
         {
             var param_filePath = "path/to/the/file.json";
             var param_listOfEntity = new List<FakeBlogModel>();
-            _fileDatabase.WriteToDatabase(param_filePath, param_listOfEntity);
+            _fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
             _mockFileWriter.VerifyWriteNotCalled();
             _mockFileReader.VerifyReadNotCalled();
         }
@@ -160,7 +160,7 @@ namespace Blog.Core.Test
             var param_listOfEntity = new List<FakeBlogModel> { stub_fakeBlogModel };
             var expected_appendToFile = false;
             var expected_value = JsonConvert.SerializeObject(param_listOfEntity);
-            _fileDatabase.WriteToDatabase(param_filePath, param_listOfEntity);
+            _fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
             _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
             _mockFileReader.VerifyRead(param_filePath);
         }
@@ -177,7 +177,7 @@ namespace Blog.Core.Test
             stub_listOfEntity.AddRange(param_listOfEntity);
             var expected_appendToFile = false;
             var expected_value = JsonConvert.SerializeObject(stub_listOfEntity);
-            _fileDatabase.WriteToDatabase(param_filePath, param_listOfEntity);
+            _fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
             _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
             _mockFileReader.VerifyRead(param_filePath);
         }

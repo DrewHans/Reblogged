@@ -5,23 +5,23 @@ using System.Linq;
 
 namespace Blog.Core
 {
-    public class BlogUserFileRepo : IBlogUserRepo
+    public class BlogUserFileAdapter : IBlogUserDataAccessAdapter
     {
         private readonly IConfiguration _configuration;
-        private readonly IFileDatabase<BlogUser> _fileDatabase;
+        private readonly IFileDataAccess<BlogUser> _fileDataAccess;
         private readonly string _filePathConfigKey;
 
-        public BlogUserFileRepo(IConfiguration configuration, IFileDatabase<BlogUser> fileDatabase)
+        public BlogUserFileAdapter(IConfiguration configuration, IFileDataAccess<BlogUser> fileDataAccess)
         {
             _configuration = configuration;
-            _fileDatabase = fileDatabase;
-            _filePathConfigKey = "filedatabase_bloguser_path";
+            _fileDataAccess = fileDataAccess;
+            _filePathConfigKey = "fileDataAccess_bloguser_path";
         }
 
         public void Add(BlogUser entity)
         {
             var filePath = _configuration[_filePathConfigKey];
-            _fileDatabase.WriteToDatabase(filePath, entity);
+            _fileDataAccess.WriteToDatabase(filePath, entity);
         }
 
         public void Delete(BlogUser entity)
@@ -29,7 +29,7 @@ namespace Blog.Core
             var listFromDatabase = List();
             var newList = GetNewListWithoutBlogUser(listFromDatabase, entity);
             var filePath = _configuration[_filePathConfigKey];
-            _fileDatabase.OverwriteDatabase(filePath, newList);
+            _fileDataAccess.OverwriteDatabase(filePath, newList);
         }
 
         public void Edit(BlogUser entity)
@@ -38,7 +38,7 @@ namespace Blog.Core
             var newList = GetNewListWithoutBlogUser(listFromDatabase, entity);
             newList.Add(entity);
             var filePath = _configuration[_filePathConfigKey];
-            _fileDatabase.OverwriteDatabase(filePath, newList);
+            _fileDataAccess.OverwriteDatabase(filePath, newList);
         }
 
         public BlogUser GetById(Guid id)
@@ -50,7 +50,7 @@ namespace Blog.Core
         public List<BlogUser> List()
         {
             var filePath = _configuration[_filePathConfigKey];
-            return _fileDatabase.ReadDatabase(filePath);
+            return _fileDataAccess.ReadDatabase(filePath);
         }
 
         private List<BlogUser> GetNewListWithoutBlogUser(List<BlogUser> listOfBlogUser, BlogUser entity)

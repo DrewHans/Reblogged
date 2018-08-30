@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Blog.Core
 {
-    public class FileDatabase<T> : IFileDatabase<T>
+    public class FileDataAccess<T> : IFileDataAccess<T>
     {
         private readonly IFileReader _fileReader;
         private readonly IFileWriter _fileWriter;
 
-        public FileDatabase(IFileReader fileReader, IFileWriter fileWriter)
+        public FileDataAccess(IFileReader fileReader, IFileWriter fileWriter)
         {
             _fileReader = fileReader;
             _fileWriter = fileWriter;

@@ -1,23 +1,22 @@
-using Blog.Core;
 using Moq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace Blog.Core.Test.Mocks
 {
-    public class MockISqlDatabase : ISqlDatabase
+    public class MockISqlServerDataAccess : ISqlServerDataAccess
     {
-        private readonly Mock<ISqlDatabase> _mockISqlDatabase;
+        private readonly Mock<ISqlServerDataAccess> _mockISqlServerDataAccess;
 
-        public MockISqlDatabase()
+        public MockISqlServerDataAccess()
         {
-            _mockISqlDatabase = new Mock<ISqlDatabase>();
+            _mockISqlServerDataAccess = new Mock<ISqlServerDataAccess>();
         }
 
         public int ExecuteNonQueryStoredProcedure(
             string sqlConnectionString, string storedProcedure)
         {
-            return _mockISqlDatabase.Object.ExecuteNonQueryStoredProcedure(
+            return _mockISqlServerDataAccess.Object.ExecuteNonQueryStoredProcedure(
                 sqlConnectionString, storedProcedure);
         }
 
@@ -25,14 +24,14 @@ namespace Blog.Core.Test.Mocks
             string sqlConnectionString, string storedProcedure,
             List<SqlParameter> listOfSqlParameters)
         {
-            return _mockISqlDatabase.Object.ExecuteNonQueryStoredProcedure(
+            return _mockISqlServerDataAccess.Object.ExecuteNonQueryStoredProcedure(
                 sqlConnectionString, storedProcedure, listOfSqlParameters);
         }
 
         public List<T> ExecuteReaderStoredProcedure<T>(
             string sqlConnectionString, string storedProcedure)
         {
-            return _mockISqlDatabase.Object.ExecuteReaderStoredProcedure<T>(
+            return _mockISqlServerDataAccess.Object.ExecuteReaderStoredProcedure<T>(
                 sqlConnectionString, storedProcedure);
         }
 
@@ -40,21 +39,21 @@ namespace Blog.Core.Test.Mocks
             string sqlConnectionString, string storedProcedure,
             List<SqlParameter> listOfSqlParameters)
         {
-            return _mockISqlDatabase.Object.ExecuteReaderStoredProcedure<T>(
+            return _mockISqlServerDataAccess.Object.ExecuteReaderStoredProcedure<T>(
                 sqlConnectionString, storedProcedure);
         }
 
-        public MockISqlDatabase StubExecuteNonQueryStoredProcedure(int stub)
+        public MockISqlServerDataAccess StubExecuteNonQueryStoredProcedure(int stub)
         {
-            _mockISqlDatabase.Setup(x => x.ExecuteNonQueryStoredProcedure(
+            _mockISqlServerDataAccess.Setup(x => x.ExecuteNonQueryStoredProcedure(
                     It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<SqlParameter>>()))
                 .Returns(stub);
             return this;
         }
 
-        public MockISqlDatabase StubExecuteReaderStoredProcedure<T>(List<T> stub)
+        public MockISqlServerDataAccess StubExecuteReaderStoredProcedure<T>(List<T> stub)
         {
-            _mockISqlDatabase.Setup(x => x.ExecuteReaderStoredProcedure<T>(
+            _mockISqlServerDataAccess.Setup(x => x.ExecuteReaderStoredProcedure<T>(
                     It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<SqlParameter>>()))
                 .Returns(stub);
             return this;
@@ -63,7 +62,7 @@ namespace Blog.Core.Test.Mocks
         public void VerifyExecuteNonQueryStoredProcedure(
             string sqlConnectionString, string storedProcedure)
         {
-            _mockISqlDatabase.Verify(x => x.ExecuteNonQueryStoredProcedure(
+            _mockISqlServerDataAccess.Verify(x => x.ExecuteNonQueryStoredProcedure(
                 sqlConnectionString, storedProcedure));
         }
 
@@ -71,14 +70,14 @@ namespace Blog.Core.Test.Mocks
             string sqlConnectionString, string storedProcedure,
             List<SqlParameter> listOfSqlParameters)
         {
-            _mockISqlDatabase.Verify(x => x.ExecuteNonQueryStoredProcedure(
+            _mockISqlServerDataAccess.Verify(x => x.ExecuteNonQueryStoredProcedure(
                 sqlConnectionString, storedProcedure, listOfSqlParameters));
         }
 
         public void VerifyExecuteReaderStoredProcedure<T>(
             string sqlConnectionString, string storedProcedure)
         {
-            _mockISqlDatabase.Verify(x => x.ExecuteReaderStoredProcedure<T>(
+            _mockISqlServerDataAccess.Verify(x => x.ExecuteReaderStoredProcedure<T>(
                 sqlConnectionString, storedProcedure));
         }
 
@@ -86,7 +85,7 @@ namespace Blog.Core.Test.Mocks
             string sqlConnectionString, string storedProcedure,
             List<SqlParameter> listOfSqlParameters)
         {
-            _mockISqlDatabase.Verify(x => x.ExecuteReaderStoredProcedure<T>(
+            _mockISqlServerDataAccess.Verify(x => x.ExecuteReaderStoredProcedure<T>(
                 sqlConnectionString, storedProcedure));
         }
     }

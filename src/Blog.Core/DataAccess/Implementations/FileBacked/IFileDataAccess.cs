@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Blog.Core
 {
-    public interface IFileDatabase<T>
+    public interface IFileDataAccess<T>
     {
         void ClearDatabase(string filePath);
         void OverwriteDatabase(string filePath, List<T> listOfEntity);

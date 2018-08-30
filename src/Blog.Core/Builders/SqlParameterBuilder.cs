@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Blog.Core
 {
-    public class SqlParameterBuilder<T> : ISqlParameterBuilder<T>
+    public class SqlParameterBuilder : ISqlParameterBuilder
     {
-        public SqlParameter BuildSqlParameter(string propertyName, object propertyValue)
+        public SqlParameter BuildSqlParameter<T>(string propertyName, object propertyValue)
         {
             var propertyAttribute = typeof(T)
                 .GetProperty(propertyName)

@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace Blog.Core
 {
-    public interface ISqlDatabase
+    public interface ISqlServerDataAccess
     {
         int ExecuteNonQueryStoredProcedure(
             string sqlConnectionString, string storedProcedure);
