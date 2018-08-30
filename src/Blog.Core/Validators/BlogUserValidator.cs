@@ -7,27 +7,41 @@ namespace Blog.Core
     {
         public bool IsValidBlogUser(BlogUser blogUser)
         {
-            throw new NotImplementedException();
+            return IsValidPermissions(blogUser.Permissions)
+                && IsValidTimeRegistered(blogUser.TimeRegistered)
+                && IsValidUserId(blogUser.UserId)
+                && IsValidUserName(blogUser.UserName);
         }
 
         public bool IsValidPermissions(List<string> permissions)
         {
-            throw new NotImplementedException();
+            if (permissions == null)
+                return false;
+            foreach (var permission in permissions)
+                if (string.IsNullOrEmpty(permission))
+                    return false;
+            return true;
         }
 
         public bool IsValidTimeRegistered(DateTime timeRegistered)
         {
-            throw new NotImplementedException();
+            if (timeRegistered == null)
+                return false;
+            return true;
         }
 
-        public bool IsValidUserId(Guid postId)
+        public bool IsValidUserId(Guid userId)
         {
-            throw new NotImplementedException();
+            if (userId == null)
+                return false;
+            return true;
         }
 
         public bool IsValidUserName(string userName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(userName))
+                return false;
+            return true;
         }
     }
 }

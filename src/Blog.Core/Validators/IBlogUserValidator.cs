@@ -8,7 +8,7 @@ namespace Blog.Core
         bool IsValidBlogUser(BlogUser blogUser);
         bool IsValidPermissions(List<string> permissions);
         bool IsValidTimeRegistered(DateTime timeRegistered);
-        bool IsValidUserId(Guid postId);
+        bool IsValidUserId(Guid userId);
         bool IsValidUserName(string userName);
     }
 }

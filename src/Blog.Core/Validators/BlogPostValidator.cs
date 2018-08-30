@@ -6,37 +6,54 @@ namespace Blog.Core
     {
         public bool IsValidAuthorId(Guid authorId)
         {
-            throw new NotImplementedException();
+            if (authorId == null)
+                return false;
+            return true;
         }
 
         public bool IsValidBlogPost(BlogPost blogPost)
         {
-            throw new NotImplementedException();
+            return IsValidAuthorId(blogPost.AuthorId)
+                && IsValidPostBody(blogPost.PostBody)
+                && IsValidPostId(blogPost.PostId)
+                && IsValidPostTitle(blogPost.PostTitle)
+                && IsValidTimeCreated(blogPost.TimeCreated)
+                && IsValidTimeLastModified(blogPost.TimeLastModified);
         }
 
         public bool IsValidPostBody(string postBody)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(postBody))
+                return false;
+            return true;
         }
 
         public bool IsValidPostId(Guid postId)
         {
-            throw new NotImplementedException();
+            if (postId == null)
+                return false;
+            return true;
         }
 
         public bool IsValidPostTitle(string postTitle)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(postTitle))
+                return false;
+            return true;
         }
 
         public bool IsValidTimeCreated(DateTime timeCreated)
         {
-            throw new NotImplementedException();
+            if (timeCreated == null)
+                return false;
+            return true;
         }
 
         public bool IsValidTimeLastModified(DateTime timeLastModified)
         {
-            throw new NotImplementedException();
+            if (timeLastModified == null)
+                return false;
+            return true;
         }
     }
 }
