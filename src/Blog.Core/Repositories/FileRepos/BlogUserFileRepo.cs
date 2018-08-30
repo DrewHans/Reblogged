@@ -15,7 +15,7 @@ namespace Blog.Core
         {
             _configuration = configuration;
             _fileDatabase = fileDatabase;
-            _filePathConfigKey = _configuration["filedatabase_bloguser_path"];
+            _filePathConfigKey = "filedatabase_bloguser_path";
         }
 
         public void Add(BlogUser entity)
