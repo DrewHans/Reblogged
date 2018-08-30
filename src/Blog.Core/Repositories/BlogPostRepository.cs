@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Blog.Core
 {
-    public class BlogPostFileRepository : IBlogPostRepository
+    public class BlogPostRepository : IBlogPostRepository
     {
         private readonly IBlogPostDataAccessAdapter _dataAccessAdapter;
 
-        public BlogPostFileRepository(IBlogPostDataAccessAdapter dataAccessAdapter)
+        public BlogPostRepository(IBlogPostDataAccessAdapter dataAccessAdapter)
         {
             _dataAccessAdapter = dataAccessAdapter;
         }
