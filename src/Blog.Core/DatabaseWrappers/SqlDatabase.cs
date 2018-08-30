@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -36,15 +35,16 @@ namespace Blog.Core
             return numberOfRowsAffected;
         }
 
-        public List<BlogPost> ExecuteBlogPostReaderStoredProcedure(string sqlConnectionString, string storedProcedure)
+        public List<T> ExecuteReaderStoredProcedure<T>(string sqlConnectionString, string storedProcedure)
         {
-            return ExecuteBlogPostReaderStoredProcedure(sqlConnectionString, storedProcedure, null);
+            return ExecuteReaderStoredProcedure<T>(sqlConnectionString, storedProcedure, null);
         }
 
-        public List<BlogPost> ExecuteBlogPostReaderStoredProcedure(string sqlConnectionString, string storedProcedure,
+        public List<T> ExecuteReaderStoredProcedure<T>(string sqlConnectionString, string storedProcedure,
             List<SqlParameter> listOfSqlParameters)
         {
-            var listOfBlogPost = new List<BlogPost>();
+            // TODO: Refactor this mess into something clean and readable
+            var listOfObject = new List<object>();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 using (SqlCommand command = new SqlCommand(storedProcedure))
@@ -64,68 +64,37 @@ namespace Blog.Core
                     {
                         while (sqlDataReader.Read())
                         {
-                            var blogPost = new BlogPost
+                            if (typeof(T).Equals(typeof(BlogPost)))
                             {
-                                AuthorId = (Guid)sqlDataReader[0],
-                                PostBody = (string)sqlDataReader[1],
-                                PostId = (Guid)sqlDataReader[2],
-                                PostTitle = (string)sqlDataReader[3],
-                                TimeCreated = (DateTime)sqlDataReader[4],
-                                TimeLastModified = (DateTime)sqlDataReader[5]
-                            };
-                            listOfBlogPost.Add(blogPost);
+                                var blogPost = new BlogPost
+                                {
+                                    AuthorId = sqlDataReader.GetGuid(0),
+                                    PostBody = sqlDataReader.GetString(1),
+                                    PostId = sqlDataReader.GetGuid(2),
+                                    PostTitle = sqlDataReader.GetString(3),
+                                    TimeCreated = sqlDataReader.GetDateTime(4),
+                                    TimeLastModified = sqlDataReader.GetDateTime(5)
+                                };
+                                listOfObject.Add(blogPost);
+                            }
+                            else if (typeof(T).Equals(typeof(BlogUser)))
+                            {
+                                var blogUser = new BlogUser
+                                {
+                                    Permissions = sqlDataReader.GetFieldValue<List<string>>(0),
+                                    TimeRegistered = sqlDataReader.GetDateTime(1),
+                                    UserId = sqlDataReader.GetGuid(2),
+                                    UserName = sqlDataReader.GetString(3)
+                                };
+                                listOfObject.Add(blogUser);
+                            }
                         }
                     }
                     sqlDataReader.Close();
                     connection.Close();
                 }
             }
-            return listOfBlogPost;
-        }
-
-        public List<BlogUser> ExecuteBlogUserReaderStoredProcedure(string sqlConnectionString, string storedProcedure)
-        {
-            return ExecuteBlogUserReaderStoredProcedure(sqlConnectionString, storedProcedure, null);
-        }
-
-        public List<BlogUser> ExecuteBlogUserReaderStoredProcedure(string sqlConnectionString, string storedProcedure,
-            List<SqlParameter> listOfSqlParameters)
-        {
-            var listOfBlogUser = new List<BlogUser>();
-            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
-            {
-                using (SqlCommand command = new SqlCommand(storedProcedure))
-                {
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Connection = connection;
-                    if (listOfSqlParameters != null)
-                    {
-                        foreach (var sqlParameter in listOfSqlParameters)
-                        {
-                            command.Parameters.Add(sqlParameter);
-                        }
-                    }
-                    connection.Open();
-                    var sqlDataReader = command.ExecuteReader();
-                    if (sqlDataReader.HasRows)
-                    {
-                        while (sqlDataReader.Read())
-                        {
-                            var blogUser = new BlogUser
-                            {
-                                Permissions = (List<string>)sqlDataReader[0],
-                                TimeRegistered = (DateTime)sqlDataReader[1],
-                                UserId = (Guid)sqlDataReader[2],
-                                UserName = (string)sqlDataReader[3]
-                            };
-                            listOfBlogUser.Add(blogUser);
-                        }
-                    }
-                    sqlDataReader.Close();
-                    connection.Close();
-                }
-            }
-            return listOfBlogUser;
+            return listOfObject as List<T>;
         }
     }
 }

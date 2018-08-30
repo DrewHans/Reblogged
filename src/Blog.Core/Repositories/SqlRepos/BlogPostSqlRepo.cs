@@ -79,7 +79,7 @@ namespace Blog.Core
             var storedProcedure = _configuration["sqldatabase_storedprocedure_blogpost_getbyid"];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter("AuthorId", id));
-            var listReturned = _sqlDatabase.ExecuteBlogPostReaderStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
+            var listReturned = _sqlDatabase.ExecuteReaderStoredProcedure<BlogPost>(sqlConnectionString, storedProcedure, listOfSqlParameters);
             if (listReturned.Count != 1)
                 return null;
             return listReturned[0];
@@ -89,7 +89,7 @@ namespace Blog.Core
         {
             var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
             var storedProcedure = _configuration["sqldatabase_storedprocedure_blogpost_list"];
-            return _sqlDatabase.ExecuteBlogPostReaderStoredProcedure(sqlConnectionString, storedProcedure);
+            return _sqlDatabase.ExecuteReaderStoredProcedure<BlogPost>(sqlConnectionString, storedProcedure);
         }
 
         public List<BlogPost> ListByAuthorId(Guid id)
@@ -98,7 +98,7 @@ namespace Blog.Core
             var storedProcedure = _configuration["sqldatabase_storedprocedure_blogpost_listbyauthorid"];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter("AuthorId", id));
-            return _sqlDatabase.ExecuteBlogPostReaderStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
+            return _sqlDatabase.ExecuteReaderStoredProcedure<BlogPost>(sqlConnectionString, storedProcedure, listOfSqlParameters);
         }
     }
 }

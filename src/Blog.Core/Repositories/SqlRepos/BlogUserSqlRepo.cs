@@ -66,7 +66,7 @@ namespace Blog.Core
             var storedProcedure = _configuration["sqldatabase_storedprocedure_bloguser_getbyid"];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter("UserId", id));
-            var listReturned = _sqlDatabase.ExecuteBlogUserReaderStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
+            var listReturned = _sqlDatabase.ExecuteReaderStoredProcedure<BlogUser>(sqlConnectionString, storedProcedure, listOfSqlParameters);
             if (listReturned.Count != 1)
                 return null;
             return listReturned[0];
@@ -76,7 +76,7 @@ namespace Blog.Core
         {
             var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
             var storedProcedure = _configuration["sqldatabase_storedprocedure_bloguser_list"];
-            return _sqlDatabase.ExecuteBlogUserReaderStoredProcedure(sqlConnectionString, storedProcedure);
+            return _sqlDatabase.ExecuteReaderStoredProcedure<BlogUser>(sqlConnectionString, storedProcedure);
         }
     }
 }
