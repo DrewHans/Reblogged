@@ -37,5 +37,10 @@ namespace Blog.Core.Test.Mocks
         {
             _mockIFileReader.Verify(x => x.Read(filepath));
         }
+
+        public void VerifyReadNotCalled()
+        {
+            _mockIFileReader.Verify(x => x.Read(It.IsAny<string>()), Times.Never());
+        }
     }
 }

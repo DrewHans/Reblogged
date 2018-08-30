@@ -8,6 +8,6 @@ namespace Blog.Core
         void Delete(T entity);
         void Edit(T entity);
         T GetById(U id);
-        IEnumerable<T> List();
+        List<T> List();
     }
 }

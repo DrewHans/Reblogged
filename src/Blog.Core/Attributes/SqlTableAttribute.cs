@@ -4,6 +4,6 @@ namespace Blog.Core
 {
     public class SqlTableAttribute : Attribute
     {
-        public string Name { get; set; }
+        public string TableName { get; set; }
     }
 }

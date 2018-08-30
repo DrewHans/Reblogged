@@ -14,21 +14,47 @@ namespace Blog.Core
             _fileWriter = fileWriter;
         }
 
+        public void ClearDatabase(string filePath)
+        {
+            var appendToFile = false;
+            var value = "";
+            _fileWriter.Write(filePath, appendToFile, value);
+        }
+
+        public void OverwriteDatabase(string filePath, List<T> listOfEntity)
+        {
+            if (listOfEntity == null || listOfEntity.Count == 0)
+                return;
+            var appendToFile = false;
+            var value = JsonConvert.SerializeObject(listOfEntity);
+            _fileWriter.Write(filePath, appendToFile, value);
+        }
+
         public List<T> ReadDatabase(string filePath)
         {
             var fileContents = _fileReader.Read(filePath);
             if (fileContents == null)
                 return new List<T>();
-            var listOfT = JsonConvert.DeserializeObject<List<T>>(fileContents);
-            return (listOfT == null) ? new List<T>() : listOfT;
+            var list = JsonConvert.DeserializeObject<List<T>>(fileContents);
+            return (list == null) ? new List<T>() : list;
         }
 
-        public void WriteDatabase(string filePath, bool appendToFile, List<T> listOfT)
+        public void WriteToDatabase(string filePath, List<T> listOfEntity)
         {
-            if (listOfT == null || listOfT.Count == 0)
+            if (listOfEntity == null || listOfEntity.Count == 0)
                 return;
-            var value = JsonConvert.SerializeObject(listOfT);
-            _fileWriter.Write(filePath, appendToFile, value);
+            var list = ReadDatabase(filePath);
+            list.AddRange(listOfEntity);
+            OverwriteDatabase(filePath, list);
+        }
+
+        public void WriteToDatabase(string filePath, T entity)
+        {
+            if (entity == null)
+                return;
+            var list = ReadDatabase(filePath);
+            list.Add(entity);
+            OverwriteDatabase(filePath, list);
         }
     }
 }

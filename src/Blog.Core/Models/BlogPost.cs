@@ -3,25 +3,25 @@ using System.Data;
 
 namespace Blog.Core
 {
-    [SqlTable(Name = "blogpost")]
+    [SqlTable(TableName = "blogpost")]
     public class BlogPost
     {
-        [SqlColumn(Name = "authorid", Type = SqlDbType.NChar)]
+        [SqlColumn(ColumnName = "authorid", SqlDbType = SqlDbType.NChar)]
         public Guid AuthorId { get; set; }
 
-        [SqlColumn(Name = "body", Type = SqlDbType.NChar)]
+        [SqlColumn(ColumnName = "body", SqlDbType = SqlDbType.NChar)]
         public string PostBody { get; set; }
 
-        [SqlColumn(Name = "id", Type = SqlDbType.NChar)]
+        [SqlColumn(ColumnName = "id", SqlDbType = SqlDbType.NChar)]
         public Guid PostId { get; set; }
 
-        [SqlColumn(Name = "title", Type = SqlDbType.NChar)]
+        [SqlColumn(ColumnName = "title", SqlDbType = SqlDbType.NChar)]
         public string PostTitle { get; set; }
 
-        [SqlColumn(Name = "timecreated", Type = SqlDbType.DateTime)]
+        [SqlColumn(ColumnName = "timecreated", SqlDbType = SqlDbType.DateTime)]
         public DateTime TimeCreated { get; set; }
 
-        [SqlColumn(Name = "timemodified", Type = SqlDbType.DateTime)]
+        [SqlColumn(ColumnName = "timemodified", SqlDbType = SqlDbType.DateTime)]
         public DateTime TimeLastModified { get; set; }
     }
 }
