@@ -6,8 +6,6 @@ namespace Blog.Core
     {
         public bool IsValidAuthorId(Guid authorId)
         {
-            if (authorId == null)
-                return false;
             return true;
         }
 
@@ -30,8 +28,6 @@ namespace Blog.Core
 
         public bool IsValidPostId(Guid postId)
         {
-            if (postId == null)
-                return false;
             return true;
         }
 
@@ -44,15 +40,11 @@ namespace Blog.Core
 
         public bool IsValidTimeCreated(DateTime timeCreated)
         {
-            if (timeCreated == null)
-                return false;
             return true;
         }
 
         public bool IsValidTimeLastModified(DateTime timeLastModified)
         {
-            if (timeLastModified == null)
-                return false;
             return true;
         }
     }

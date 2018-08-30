@@ -25,15 +25,11 @@ namespace Blog.Core
 
         public bool IsValidTimeRegistered(DateTime timeRegistered)
         {
-            if (timeRegistered == null)
-                return false;
             return true;
         }
 
         public bool IsValidUserId(Guid userId)
         {
-            if (userId == null)
-                return false;
             return true;
         }
 
