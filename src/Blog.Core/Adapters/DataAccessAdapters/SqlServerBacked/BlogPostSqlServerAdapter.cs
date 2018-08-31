@@ -18,7 +18,7 @@ namespace Blog.Core
             _configuration = configuration;
             _sqlServerDataAccess = sqlServerDataAccess;
             _sqlParameterBuilder = sqlParameterBuilder;
-            _sqlConnectionStringConfigKey = _configuration["sqldatabase_connectionstring"];
+            _sqlConnectionStringConfigKey = "sqldatabase_connectionstring";
         }
 
         public void Add(BlogPost entity)
