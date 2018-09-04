@@ -23,19 +23,19 @@ namespace Blog.Core.Test.Stubs
             _dictionary["filedatabase_bloguser_path"] = "fake/path/to/bloguser/database.json";
 
             // stub key-value pairs for Sql Backed Repos
-            _dictionary["sqldatabase_connectionstring"] = "Server=SomeServerName;Database=SomeDatabase;MoreSuperSecretFields=MoreSuperSecretValues;";
-            _dictionary["sqldatabase_storedprocedure_blogpost_add"] = "spBlogPostInsert";
-            _dictionary["sqldatabase_storedprocedure_blogpost_delete"] = "spBlogPostDelete";
-            _dictionary["sqldatabase_storedprocedure_blogpost_deleteallbyauthorid"] = "spBlogPostDeleteMany";
-            _dictionary["sqldatabase_storedprocedure_blogpost_edit"] = "spBlogPostUpdate";
-            _dictionary["sqldatabase_storedprocedure_blogpost_getbyid"] = "spBlogPostSelectById";
-            _dictionary["sqldatabase_storedprocedure_blogpost_list"] = "spBlogPostSelectAll";
-            _dictionary["sqldatabase_storedprocedure_blogpost_listbyauthorid"] = "spBlogPostSelectAllByAuthorId";
-            _dictionary["sqldatabase_storedprocedure_bloguser_add"] = "spBlogUserInsert";
-            _dictionary["sqldatabase_storedprocedure_bloguser_delete"] = "spBlogUserDelete";
-            _dictionary["sqldatabase_storedprocedure_bloguser_edit"] = "spBlogUserUpdate";
-            _dictionary["sqldatabase_storedprocedure_bloguser_getbyid"] = "spBlogUserSelectById";
-            _dictionary["sqldatabase_storedprocedure_bloguser_list"] = "spBlogUserSelectAll";
+            _dictionary["sqlserver_connectionstring"] = "Server=SomeServerName;Database=SomeDatabase;MoreSuperSecretFields=MoreSuperSecretValues;";
+            _dictionary["sqlserver_storedprocedure_blogpost_add"] = "spBlogPostInsert";
+            _dictionary["sqlserver_storedprocedure_blogpost_delete"] = "spBlogPostDelete";
+            _dictionary["sqlserver_storedprocedure_blogpost_deleteallbyauthorid"] = "spBlogPostDeleteMany";
+            _dictionary["sqlserver_storedprocedure_blogpost_edit"] = "spBlogPostUpdate";
+            _dictionary["sqlserver_storedprocedure_blogpost_getbyid"] = "spBlogPostSelectById";
+            _dictionary["sqlserver_storedprocedure_blogpost_list"] = "spBlogPostSelectAll";
+            _dictionary["sqlserver_storedprocedure_blogpost_listbyauthorid"] = "spBlogPostSelectAllByAuthorId";
+            _dictionary["sqlserver_storedprocedure_bloguser_add"] = "spBlogUserInsert";
+            _dictionary["sqlserver_storedprocedure_bloguser_delete"] = "spBlogUserDelete";
+            _dictionary["sqlserver_storedprocedure_bloguser_edit"] = "spBlogUserUpdate";
+            _dictionary["sqlserver_storedprocedure_bloguser_getbyid"] = "spBlogUserSelectById";
+            _dictionary["sqlserver_storedprocedure_bloguser_list"] = "spBlogUserSelectAll";
         }
 
         public IEnumerable<IConfigurationSection> GetChildren()
