@@ -14,24 +14,25 @@ fi
 
 if [[ -x "$(command -v chromium-browser)" ]]; then
     echo "Opening file with Chromium Browser."
-    chromium-browser $report_path
+    nohup chromium-browser $report_path &>/dev/null &
 
 elif [[ -x "$(command -v google-chrome)" ]]; then
     echo "Opening file with Google Chrome Browser."
-    google-chrome $report_path
+    nohup google-chrome $report_path &>/dev/null &
 
 elif [[ -x "$(command -v firefox)" ]]; then
     echo "Opening file with Firefox Browser."
-    firefox $report_path
+    nohup firefox $report_path &>/dev/null &
 
 elif [[ -x "$(command -v brave-bin)" ]]; then
     echo "Opening file with Brave Browser."
-    brave-bin $report_path
+    nohup brave-bin $report_path &>/dev/null &
 
 elif [[ -x "$(command -v opera)" ]]; then
     echo "Opening file with Opera Browser."
-    opera $report_path
+    nohup opera $report_path &>/dev/null &
 
 else
     echo "No compatible web browser found."
+    exit 1
 fi
