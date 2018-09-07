@@ -11,12 +11,8 @@ namespace Blog.Core
 
         public bool IsValidBlogPost(BlogPost blogPost)
         {
-            return IsValidAuthorId(blogPost.AuthorId)
-                && IsValidPostBody(blogPost.PostBody)
-                && IsValidPostId(blogPost.PostId)
-                && IsValidPostTitle(blogPost.PostTitle)
-                && IsValidTimeCreated(blogPost.TimeCreated)
-                && IsValidTimeLastModified(blogPost.TimeLastModified);
+            return IsValidPostBody(blogPost.PostBody)
+                && IsValidPostTitle(blogPost.PostTitle);
         }
 
         public bool IsValidPostBody(string postBody)

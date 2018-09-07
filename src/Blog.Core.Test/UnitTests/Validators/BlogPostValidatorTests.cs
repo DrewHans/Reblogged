@@ -34,6 +34,26 @@ namespace Blog.Core.Test
         }
 
         [Fact]
+        public void IsValidBlogPost_PostBodyIsInvalid_ReturnsFalse()
+        {
+            var param_blogPost = new StubBlogPost() as BlogPost;
+            param_blogPost.PostBody = "";
+            var expected = false;
+            var actual = _blogPostValidator.IsValidBlogPost(param_blogPost);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void IsValidBlogPost_PostTitleIsInvalid_ReturnsFalse()
+        {
+            var param_blogPost = new StubBlogPost() as BlogPost;
+            param_blogPost.PostTitle = "";
+            var expected = false;
+            var actual = _blogPostValidator.IsValidBlogPost(param_blogPost);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void IsValidPostBody_ValidPostBody_ReturnsTrue()
         {
             var param_postBody = new StubBlogPost().PostBody;

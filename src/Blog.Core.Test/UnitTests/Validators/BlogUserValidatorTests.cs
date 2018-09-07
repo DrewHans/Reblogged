@@ -26,6 +26,26 @@ namespace Blog.Core.Test
         }
 
         [Fact]
+        public void IsValidBlogUser_PermissionsIsInvalid_ReturnsFalse()
+        {
+            var param_blogUser = new StubBlogUser() as BlogUser;
+            param_blogUser.Permissions = null;
+            var expected = false;
+            var actual = _blogUserValidator.IsValidBlogUser(param_blogUser);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void IsValidBlogUser_UserNameIsInvalid_ReturnsFalse()
+        {
+            var param_blogUser = new StubBlogUser() as BlogUser;
+            param_blogUser.UserName = "";
+            var expected = false;
+            var actual = _blogUserValidator.IsValidBlogUser(param_blogUser);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void IsValidPermissions_ValidPermissions_ReturnsTrue()
         {
             var param_permissions = new StubBlogUser().Permissions;

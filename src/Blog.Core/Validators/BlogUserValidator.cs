@@ -8,8 +8,6 @@ namespace Blog.Core
         public bool IsValidBlogUser(BlogUser blogUser)
         {
             return IsValidPermissions(blogUser.Permissions)
-                && IsValidTimeRegistered(blogUser.TimeRegistered)
-                && IsValidUserId(blogUser.UserId)
                 && IsValidUserName(blogUser.UserName);
         }
 
