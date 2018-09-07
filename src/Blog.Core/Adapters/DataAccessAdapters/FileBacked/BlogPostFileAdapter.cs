@@ -9,18 +9,16 @@ namespace Blog.Core
     {
         private readonly IConfiguration _configuration;
         private readonly IFileDataAccess<BlogPost> _fileDataAccess;
-        private readonly string _filePathConfigKey;
 
         public BlogPostFileAdapter(IConfiguration configuration, IFileDataAccess<BlogPost> fileDataAccess)
         {
             _configuration = configuration;
             _fileDataAccess = fileDataAccess;
-            _filePathConfigKey = "fileDataAccess_blogpost_path";
         }
 
         public void Add(BlogPost entity)
         {
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             _fileDataAccess.WriteToDatabase(filePath, entity);
         }
 
@@ -28,7 +26,7 @@ namespace Blog.Core
         {
             var listFromDatabase = List();
             var newList = GetNewListWithoutBlogPost(listFromDatabase, entity);
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             _fileDataAccess.OverwriteDatabase(filePath, newList);
         }
 
@@ -39,7 +37,7 @@ namespace Blog.Core
                 .Where(blogPost =>
                     (blogPost.AuthorId.Equals(id)) == false)
                 .ToList();
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             _fileDataAccess.OverwriteDatabase(filePath, newList);
         }
 
@@ -48,7 +46,7 @@ namespace Blog.Core
             var listFromDatabase = List();
             var newList = GetNewListWithoutBlogPost(listFromDatabase, entity);
             newList.Add(entity);
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             _fileDataAccess.OverwriteDatabase(filePath, newList);
         }
 
@@ -61,7 +59,7 @@ namespace Blog.Core
 
         public List<BlogPost> List()
         {
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             return _fileDataAccess.ReadDatabase(filePath);
         }
 

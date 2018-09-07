@@ -1,6 +1,5 @@
 using Blog.Core.Test.Fakes;
 using Blog.Core.Test.Stubs;
-using Blog.Core.Test.Mocks;
 using Moq;
 using System;
 using System.Net.Http;
@@ -55,12 +54,14 @@ namespace Blog.Core.Test
         {
             var param_request = new StubHttpRequestMessage() as HttpRequestMessage;
             var stub_response = new StubHttpResponseMessage() as HttpResponseMessage;
+            var stub_task = Task.FromResult(stub_response);
             var mockHandler = new Mock<IFakeHttpMessageHandler>();
             mockHandler.Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(stub_response));
+                .Returns(stub_task);
             var webApiDataAccess = new WebApiDataAccess(new FakeHttpMessageHandler(mockHandler.Object));
             var returned = webApiDataAccess.SendRequest(param_request);
             Assert.Equal(returned, stub_response);
+            mockHandler.Verify(x => x.SendAsync(param_request, It.IsAny<CancellationToken>()));
         }
     }
 }

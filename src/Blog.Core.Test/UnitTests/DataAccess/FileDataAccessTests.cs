@@ -1,4 +1,3 @@
-using Blog.Core;
 using Blog.Core.Test.Fakes;
 using Blog.Core.Test.Mocks;
 using Newtonsoft.Json;

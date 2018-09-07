@@ -15,7 +15,7 @@ namespace Blog.Core
 
         public void Add(BlogPost entity)
         {
-            var configKey_webapi_path = "webapi_blogpost_add";
+            var configKey_webapi_path = KeyChain.WebApiDataAccess_Endpoint_BlogPost_Add;
             var requestUri = this.BuildUri(configKey_webapi_path);
             var httpMethod = HttpMethod.Post;
             var content = JsonConvert.SerializeObject(entity);
@@ -29,9 +29,10 @@ namespace Blog.Core
 
         public void Delete(BlogPost entity)
         {
-            var configKey_webapi_path = "webapi_blogpost_delete";
+            var configKey_webapi_path = KeyChain.WebApiDataAccess_Endpoint_BlogPost_Delete;
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["postid"] = entity.PostId.ToString();
+            var queryName = KeyChain.WebApiDataAccess_Endpoint_BlogPost_Delete_UriQuery_PostId;
+            query[queryName] = entity.PostId.ToString();
             var requestUri = this.BuildUri(configKey_webapi_path, query.ToString());
             var httpMethod = HttpMethod.Delete;
             var content = "";
@@ -45,9 +46,10 @@ namespace Blog.Core
 
         public void DeleteAllByAuthorId(Guid id)
         {
-            var configKey_webapi_path = "webapi_blogpost_deleteallbyauthorid";
+            var configKey_webapi_path = KeyChain.WebApiDataAccess_Endpoint_BlogPost_DeleteAllByAuthorId;
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["authorid"] = id.ToString();
+            var queryName = KeyChain.WebApiDataAccess_Endpoint_BlogPost_DeleteAllByAuthorId_UriQuery_AuthorId;
+            query[queryName] = id.ToString();
             var requestUri = this.BuildUri(configKey_webapi_path, query.ToString());
             var httpMethod = HttpMethod.Delete;
             var content = "";
@@ -61,9 +63,10 @@ namespace Blog.Core
 
         public void Edit(BlogPost entity)
         {
-            var configKey_webapi_path = "webapi_blogpost_edit";
+            var configKey_webapi_path = KeyChain.WebApiDataAccess_Endpoint_BlogPost_Edit;
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["postid"] = entity.PostId.ToString();
+            var queryName = KeyChain.WebApiDataAccess_Endpoint_BlogPost_Edit_UriQuery_PostId;
+            query[queryName] = entity.PostId.ToString();
             var requestUri = this.BuildUri(configKey_webapi_path, query.ToString());
             var httpMethod = HttpMethod.Put;
             var content = JsonConvert.SerializeObject(entity);
@@ -77,9 +80,10 @@ namespace Blog.Core
 
         public BlogPost GetById(Guid id)
         {
-            var configKey_webapi_path = "webapi_blogpost_getbyid";
+            var configKey_webapi_path = KeyChain.WebApiDataAccess_Endpoint_BlogPost_GetById;
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["postid"] = id.ToString();
+            var queryName = KeyChain.WebApiDataAccess_Endpoint_BlogPost_GetById_UriQuery_PostId;
+            query[queryName] = id.ToString();
             var requestUri = this.BuildUri(configKey_webapi_path, query.ToString());
             var httpMethod = HttpMethod.Get;
             var content = "";
@@ -95,7 +99,7 @@ namespace Blog.Core
 
         public List<BlogPost> List()
         {
-            var configKey_webapi_path = "webapi_blogpost_list";
+            var configKey_webapi_path = KeyChain.WebApiDataAccess_Endpoint_BlogPost_List;
             var requestUri = this.BuildUri(configKey_webapi_path);
             var httpMethod = HttpMethod.Get;
             var content = "";
@@ -111,9 +115,10 @@ namespace Blog.Core
 
         public List<BlogPost> ListByAuthorId(Guid id)
         {
-            var configKey_webapi_path = "webapi_blogpost_listbyauthorid";
+            var configKey_webapi_path = KeyChain.WebApiDataAccess_Endpoint_BlogPost_ListByAuthorId;
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["authorid"] = id.ToString();
+            var queryName = KeyChain.WebApiDataAccess_Endpoint_BlogPost_ListByAuthorId_UriQuery_AuthorId;
+            query[queryName] = id.ToString();
             var requestUri = this.BuildUri(configKey_webapi_path, query.ToString());
             var httpMethod = HttpMethod.Get;
             var content = "";

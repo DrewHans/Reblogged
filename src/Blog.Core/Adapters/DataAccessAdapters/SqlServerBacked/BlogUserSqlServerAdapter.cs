@@ -10,7 +10,6 @@ namespace Blog.Core
         private readonly IConfiguration _configuration;
         private readonly ISqlServerDataAccess _sqlserver;
         private readonly ISqlParameterBuilder _sqlParameterBuilder;
-        private readonly string _sqlConnectionStringConfigKey;
 
         public BlogUserSqlServerAdapter(IConfiguration configuration, ISqlServerDataAccess sqlserver,
             ISqlParameterBuilder sqlParameterBuilder)
@@ -18,13 +17,12 @@ namespace Blog.Core
             _configuration = configuration;
             _sqlserver = sqlserver;
             _sqlParameterBuilder = sqlParameterBuilder;
-            _sqlConnectionStringConfigKey = "sqlserver_connectionstring";
         }
 
         public void Add(BlogUser entity)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_bloguser_add"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogUser_Add];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("Permissions", entity.Permissions));
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("TimeRegistered", entity.TimeRegistered));
@@ -37,8 +35,8 @@ namespace Blog.Core
 
         public void Delete(BlogUser entity)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_bloguser_delete"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogUser_Delete];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("UserId", entity.UserId));
             var rowsAffected = _sqlserver.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
@@ -48,8 +46,8 @@ namespace Blog.Core
 
         public void Edit(BlogUser entity)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_bloguser_edit"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogUser_Edit];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("Permissions", entity.Permissions));
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("TimeRegistered", entity.TimeRegistered));
@@ -62,8 +60,8 @@ namespace Blog.Core
 
         public BlogUser GetById(Guid id)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_bloguser_getbyid"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogUser_GetById];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("UserId", id));
             var listReturned = _sqlserver.ExecuteReaderStoredProcedure<BlogUser>(sqlConnectionString, storedProcedure, listOfSqlParameters);
@@ -74,8 +72,8 @@ namespace Blog.Core
 
         public List<BlogUser> List()
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_bloguser_list"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogUser_List];
             return _sqlserver.ExecuteReaderStoredProcedure<BlogUser>(sqlConnectionString, storedProcedure);
         }
     }

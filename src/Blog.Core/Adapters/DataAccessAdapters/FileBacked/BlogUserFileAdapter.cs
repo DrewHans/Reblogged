@@ -9,18 +9,16 @@ namespace Blog.Core
     {
         private readonly IConfiguration _configuration;
         private readonly IFileDataAccess<BlogUser> _fileDataAccess;
-        private readonly string _filePathConfigKey;
 
         public BlogUserFileAdapter(IConfiguration configuration, IFileDataAccess<BlogUser> fileDataAccess)
         {
             _configuration = configuration;
             _fileDataAccess = fileDataAccess;
-            _filePathConfigKey = "fileDataAccess_bloguser_path";
         }
 
         public void Add(BlogUser entity)
         {
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogUser_DatabasePath];
             _fileDataAccess.WriteToDatabase(filePath, entity);
         }
 
@@ -28,7 +26,7 @@ namespace Blog.Core
         {
             var listFromDatabase = List();
             var newList = GetNewListWithoutBlogUser(listFromDatabase, entity);
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogUser_DatabasePath];
             _fileDataAccess.OverwriteDatabase(filePath, newList);
         }
 
@@ -37,7 +35,7 @@ namespace Blog.Core
             var listFromDatabase = List();
             var newList = GetNewListWithoutBlogUser(listFromDatabase, entity);
             newList.Add(entity);
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogUser_DatabasePath];
             _fileDataAccess.OverwriteDatabase(filePath, newList);
         }
 
@@ -49,7 +47,7 @@ namespace Blog.Core
         }
         public List<BlogUser> List()
         {
-            var filePath = _configuration[_filePathConfigKey];
+            var filePath = _configuration[KeyChain.FileDataAccess_BlogUser_DatabasePath];
             return _fileDataAccess.ReadDatabase(filePath);
         }
 

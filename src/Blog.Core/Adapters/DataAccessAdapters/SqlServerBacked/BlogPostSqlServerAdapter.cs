@@ -10,7 +10,6 @@ namespace Blog.Core
         private readonly IConfiguration _configuration;
         private readonly ISqlServerDataAccess _sqlServerDataAccess;
         private readonly ISqlParameterBuilder _sqlParameterBuilder;
-        private readonly string _sqlConnectionStringConfigKey;
 
         public BlogPostSqlServerAdapter(IConfiguration configuration, ISqlServerDataAccess sqlServerDataAccess,
             ISqlParameterBuilder sqlParameterBuilder)
@@ -18,13 +17,12 @@ namespace Blog.Core
             _configuration = configuration;
             _sqlServerDataAccess = sqlServerDataAccess;
             _sqlParameterBuilder = sqlParameterBuilder;
-            _sqlConnectionStringConfigKey = "sqlserver_connectionstring";
         }
 
         public void Add(BlogPost entity)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_blogpost_add"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_Add];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("AuthorId", entity.AuthorId));
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("PostBody", entity.PostBody));
@@ -39,8 +37,8 @@ namespace Blog.Core
 
         public void Delete(BlogPost entity)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_blogpost_delete"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_Delete];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("PostId", entity.PostId));
             var rowsAffected = _sqlServerDataAccess.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
@@ -50,8 +48,8 @@ namespace Blog.Core
 
         public void DeleteAllByAuthorId(Guid id)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_blogpost_deleteallbyauthorid"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_DeleteAllByAuthorId];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("AuthorId", id));
             var rowsAffected = _sqlServerDataAccess.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
@@ -59,8 +57,8 @@ namespace Blog.Core
 
         public void Edit(BlogPost entity)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_blogpost_edit"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_Edit];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("AuthorId", entity.AuthorId));
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("PostBody", entity.PostBody));
@@ -75,8 +73,8 @@ namespace Blog.Core
 
         public BlogPost GetById(Guid id)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_blogpost_getbyid"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_GetById];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("AuthorId", id));
             var listReturned = _sqlServerDataAccess.ExecuteReaderStoredProcedure<BlogPost>(sqlConnectionString, storedProcedure, listOfSqlParameters);
@@ -87,15 +85,15 @@ namespace Blog.Core
 
         public List<BlogPost> List()
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_blogpost_list"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_List];
             return _sqlServerDataAccess.ExecuteReaderStoredProcedure<BlogPost>(sqlConnectionString, storedProcedure);
         }
 
         public List<BlogPost> ListByAuthorId(Guid id)
         {
-            var sqlConnectionString = _configuration[_sqlConnectionStringConfigKey];
-            var storedProcedure = _configuration["sqlserver_storedprocedure_blogpost_listbyauthorid"];
+            var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
+            var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_ListByAuthorId];
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("AuthorId", id));
             return _sqlServerDataAccess.ExecuteReaderStoredProcedure<BlogPost>(sqlConnectionString, storedProcedure, listOfSqlParameters);

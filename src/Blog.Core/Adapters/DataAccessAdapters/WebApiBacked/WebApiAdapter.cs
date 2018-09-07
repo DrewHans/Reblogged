@@ -1,7 +1,5 @@
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -20,8 +18,8 @@ namespace Blog.Core
 
         protected AuthenticationHeaderValue BuildAuthHeader()
         {
-            var authscheme = _configuration["webapi_authscheme"];
-            var authtoken = _configuration["webapi_authtoken"];
+            var authscheme = _configuration[KeyChain.WebApiDataAccess_AuthScheme];
+            var authtoken = _configuration[KeyChain.WebApiDataAccess_AuthToken];
             return new AuthenticationHeaderValue(authscheme, authtoken);
         }
 
@@ -39,10 +37,10 @@ namespace Blog.Core
         protected Uri BuildUri(string configKey_webapi_path, string query = null)
         {
             var uriBuilder = new UriBuilder();
-            uriBuilder.Scheme = _configuration["webapi_scheme"];
-            uriBuilder.Host = _configuration["webapi_host"];
+            uriBuilder.Scheme = _configuration[KeyChain.WebApiDataAccess_UriScheme];
+            uriBuilder.Host = _configuration[KeyChain.WebApiDataAccess_UriHost];
             uriBuilder.Path = _configuration[configKey_webapi_path];
-            uriBuilder.Port = int.Parse(_configuration["webapi_port"]);
+            uriBuilder.Port = int.Parse(_configuration[KeyChain.WebApiDataAccess_UriPort]);
             if (string.IsNullOrEmpty(query) == false)
                 uriBuilder.Query = query;
             return uriBuilder.Uri;
