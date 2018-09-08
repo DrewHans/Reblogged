@@ -64,7 +64,7 @@ namespace Blog.Core.Test
         }
 
         [Fact]
-        public void GetById_VerifyReadDatabaseCalledAndExpectedListReturned()
+        public void GetById_VerifyReadDatabaseCalledAndExpectedBlogUserReturned()
         {
             var stub_blogPost1 = new StubBlogUser() as BlogUser;
             var stub_blogPost2 = new StubBlogUser() as BlogUser;

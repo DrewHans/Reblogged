@@ -80,7 +80,7 @@ namespace Blog.Core.Test
         }
 
         [Fact]
-        public void GetById_VerifyReadDatabaseCalledAndExpectedListReturned()
+        public void GetById_VerifyReadDatabaseCalledAndExpectedBlogPostReturned()
         {
             var stub_blogPost1 = new StubBlogPost() as BlogPost;
             var stub_blogPost2 = new StubBlogPost() as BlogPost;
