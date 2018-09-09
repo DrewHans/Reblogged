@@ -39,7 +39,8 @@ namespace Blog.Core.Test.Mocks
 
         public MockIFileDataAccess<T> StubReadDatabase(List<T> stub)
         {
-            _mockIFileDataAccess.Setup(x => x.ReadDatabase(It.IsAny<string>()))
+            _mockIFileDataAccess
+                .Setup(x => x.ReadDatabase(It.IsAny<string>()))
                 .Returns(stub);
             return this;
         }

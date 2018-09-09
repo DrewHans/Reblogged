@@ -5,13 +5,8 @@ namespace Blog.Core
 {
     public class SqlServerDataAccess : ISqlServerDataAccess
     {
-        public int ExecuteNonQueryStoredProcedure(string sqlConnectionString, string storedProcedure)
-        {
-            return ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, null);
-        }
-
-        public int ExecuteNonQueryStoredProcedure(string sqlConnectionString, string storedProcedure,
-            List<SqlParameter> listOfSqlParameters)
+        public int ExecuteNonQueryStoredProcedure(string sqlConnectionString,
+            string storedProcedure, List<SqlParameter> listOfSqlParameters = null)
         {
             var numberOfRowsAffected = 0;
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
@@ -35,13 +30,8 @@ namespace Blog.Core
             return numberOfRowsAffected;
         }
 
-        public List<T> ExecuteReaderStoredProcedure<T>(string sqlConnectionString, string storedProcedure)
-        {
-            return ExecuteReaderStoredProcedure<T>(sqlConnectionString, storedProcedure, null);
-        }
-
-        public List<T> ExecuteReaderStoredProcedure<T>(string sqlConnectionString, string storedProcedure,
-            List<SqlParameter> listOfSqlParameters)
+        public List<T> ExecuteReaderStoredProcedure<T>(string sqlConnectionString,
+            string storedProcedure, List<SqlParameter> listOfSqlParameters = null)
         {
             // TODO: Refactor this mess into something clean and readable
             var listOfObject = new List<object>();

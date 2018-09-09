@@ -18,18 +18,19 @@ namespace Blog.Core.Test.Mocks
             return _mockIWebApiDataAccess.Object.SendRequest(request);
         }
 
+        public MockIWebApiDataAccess StubSendRequest(HttpResponseMessage stub)
+        {
+            _mockIWebApiDataAccess
+                .Setup(x => x.SendRequest(It.IsAny<HttpRequestMessage>()))
+                .Returns(stub);
+            return this;
+        }
+
         public MockIWebApiDataAccess StubSendRequest(List<HttpResponseMessage> listOfStubs)
         {
             var stubSequence = _mockIWebApiDataAccess.SetupSequence(x =>
                 x.SendRequest(It.IsAny<HttpRequestMessage>()));
             listOfStubs.ForEach(stub => stubSequence.Returns(stub));
-            return this;
-        }
-
-        public MockIWebApiDataAccess StubSendRequest(HttpResponseMessage stub)
-        {
-            _mockIWebApiDataAccess.Setup(x => x.SendRequest(It.IsAny<HttpRequestMessage>()))
-                .Returns(stub);
             return this;
         }
 
@@ -43,9 +44,16 @@ namespace Blog.Core.Test.Mocks
             _mockIWebApiDataAccess.Verify(x => x.SendRequest(It.IsAny<HttpRequestMessage>()));
         }
 
+        public void VerifySendRequestCalled(int timesCalled)
+        {
+            _mockIWebApiDataAccess.Verify(x => x.SendRequest(It.IsAny<HttpRequestMessage>()), 
+                Times.Exactly(timesCalled));
+        }
+
         public void VerifySendRequestNotCalled()
         {
-            _mockIWebApiDataAccess.Verify(x => x.SendRequest(It.IsAny<HttpRequestMessage>()), Times.Never());
+            _mockIWebApiDataAccess.Verify(x => x.SendRequest(It.IsAny<HttpRequestMessage>()), 
+                Times.Never());
         }
     }
 }

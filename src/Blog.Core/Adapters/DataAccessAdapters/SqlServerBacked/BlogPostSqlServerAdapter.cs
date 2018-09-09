@@ -31,8 +31,6 @@ namespace Blog.Core
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("TimeCreated", entity.TimeCreated));
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("TimeLastModified", entity.TimeLastModified));
             var rowsAffected = _sqlServerDataAccess.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
-            if (rowsAffected < 1)
-                throw new Exception("BlogPostSqlRepo failed to Add");
         }
 
         public void Delete(BlogPost entity)
@@ -42,8 +40,6 @@ namespace Blog.Core
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("PostId", entity.PostId));
             var rowsAffected = _sqlServerDataAccess.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
-            if (rowsAffected < 1)
-                throw new Exception("BlogPostSqlRepo failed to Delete");
         }
 
         public void DeleteAllByAuthorId(Guid id)
@@ -67,8 +63,6 @@ namespace Blog.Core
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("TimeCreated", entity.TimeCreated));
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("TimeLastModified", entity.TimeLastModified));
             var rowsAffected = _sqlServerDataAccess.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
-            if (rowsAffected < 1)
-                throw new Exception("BlogPostSqlRepo failed to Edit");
         }
 
         public BlogPost GetById(Guid id)

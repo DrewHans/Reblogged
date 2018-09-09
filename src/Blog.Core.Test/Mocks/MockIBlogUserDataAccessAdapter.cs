@@ -40,14 +40,16 @@ namespace Blog.Core.Test.Mocks
 
         public MockIBlogUserDataAccessAdapter StubGetById(BlogUser stub)
         {
-            _mockIBlogUserDataAccessAdapter.Setup(x => x.GetById(It.IsAny<Guid>()))
+            _mockIBlogUserDataAccessAdapter
+                .Setup(x => x.GetById(It.IsAny<Guid>()))
                 .Returns(stub);
             return this;
         }
 
         public MockIBlogUserDataAccessAdapter StubList(List<BlogUser> stub)
         {
-            _mockIBlogUserDataAccessAdapter.Setup(x => x.List())
+            _mockIBlogUserDataAccessAdapter
+                .Setup(x => x.List())
                 .Returns(stub);
             return this;
         }

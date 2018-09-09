@@ -27,7 +27,8 @@ namespace Blog.Core.Test.Mocks
 
         public MockIFileReader StubRead(string stub)
         {
-            _mockIFileReader.Setup(x => x.Read(It.IsAny<string>()))
+            _mockIFileReader
+                .Setup(x => x.Read(It.IsAny<string>()))
                 .Returns(stub);
             return this;
         }
@@ -39,7 +40,8 @@ namespace Blog.Core.Test.Mocks
 
         public void VerifyReadNotCalled()
         {
-            _mockIFileReader.Verify(x => x.Read(It.IsAny<string>()), Times.Never());
+            _mockIFileReader.Verify(x => x.Read(It.IsAny<string>()), 
+                Times.Never());
         }
     }
 }

@@ -29,8 +29,6 @@ namespace Blog.Core
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("UserId", entity.UserId));
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("UserName", entity.UserName));
             var rowsAffected = _sqlserver.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
-            if (rowsAffected < 1)
-                throw new Exception("BlogUserSqlRepo failed to Add");
         }
 
         public void Delete(BlogUser entity)
@@ -40,8 +38,6 @@ namespace Blog.Core
             var listOfSqlParameters = new List<SqlParameter>();
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("UserId", entity.UserId));
             var rowsAffected = _sqlserver.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
-            if (rowsAffected < 1)
-                throw new Exception("BlogUserSqlRepo failed to Delete");
         }
 
         public void Edit(BlogUser entity)
@@ -54,8 +50,6 @@ namespace Blog.Core
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("UserId", entity.UserId));
             listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogUser>("UserName", entity.UserName));
             var rowsAffected = _sqlserver.ExecuteNonQueryStoredProcedure(sqlConnectionString, storedProcedure, listOfSqlParameters);
-            if (rowsAffected < 1)
-                throw new Exception("BlogUserSqlRepo failed to Edit");
         }
 
         public BlogUser GetById(Guid id)

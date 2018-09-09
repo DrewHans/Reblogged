@@ -23,7 +23,9 @@ namespace Blog.Core.Test.Mocks
 
         public void VerifyWriteNotCalled()
         {
-            _mockIFileWriter.Verify(x => x.Write(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()), Times.Never());
+            _mockIFileWriter.Verify(x => x.Write(
+                It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()),
+                Times.Never());
         }
     }
 }

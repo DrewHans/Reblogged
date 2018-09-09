@@ -50,21 +50,24 @@ namespace Blog.Core.Test.Mocks
 
         public MockIBlogPostDataAccessAdapter StubGetById(BlogPost stub)
         {
-            _mockIBlogPostDataAccessAdapter.Setup(x => x.GetById(It.IsAny<Guid>()))
+            _mockIBlogPostDataAccessAdapter
+                .Setup(x => x.GetById(It.IsAny<Guid>()))
                 .Returns(stub);
             return this;
         }
 
         public MockIBlogPostDataAccessAdapter StubList(List<BlogPost> stub)
         {
-            _mockIBlogPostDataAccessAdapter.Setup(x => x.List())
+            _mockIBlogPostDataAccessAdapter
+                .Setup(x => x.List())
                 .Returns(stub);
             return this;
         }
 
         public MockIBlogPostDataAccessAdapter StubListByAuthorId(List<BlogPost> stub)
         {
-            _mockIBlogPostDataAccessAdapter.Setup(x => x.ListByAuthorId(It.IsAny<Guid>()))
+            _mockIBlogPostDataAccessAdapter
+                .Setup(x => x.ListByAuthorId(It.IsAny<Guid>()))
                 .Returns(stub);
             return this;
         }
