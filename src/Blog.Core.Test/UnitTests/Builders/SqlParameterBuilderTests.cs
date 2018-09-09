@@ -34,13 +34,14 @@ namespace Blog.Core.Test
         }
 
         [Fact]
-        public void BuildSqlParameter_ModelWithoutAttributes_ReturnsExpectedSqlParameter()
+        public void BuildSqlParameter_ModelWithoutAttributes_ThrowsException()
         {
             var fakeModelWithoutAttributes = new FakeModelWithoutAttributes();
             var param_propertyName = "FakeProperty";
             var param_propertyValue = fakeModelWithoutAttributes.FakeProperty;
-            var returned = _sqlParameterBuilder.BuildSqlParameter<FakeModelWithoutAttributes>(param_propertyName, param_propertyValue);
-            Assert.Null(returned);
+            Assert.Throws<MissingAttributeException>(
+                () => _sqlParameterBuilder.BuildSqlParameter<FakeModelWithoutAttributes>(
+                    param_propertyName, param_propertyValue));
         }
 
         private void AssertSqlParameterEqual(SqlParameter expected, SqlParameter actual)

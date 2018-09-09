@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
@@ -13,7 +12,7 @@ namespace Blog.Core
                 .GetCustomAttributes(typeof(SqlColumnAttribute), false)
                 .FirstOrDefault() as SqlColumnAttribute;
             if (propertyAttribute == null)
-                return null;
+                throw new MissingAttributeException(typeof(SqlColumnAttribute));
             var sqlParameter = new SqlParameter();
             sqlParameter.ParameterName = $"@{propertyAttribute.ColumnName}";
             sqlParameter.SqlDbType = propertyAttribute.SqlDbType;
