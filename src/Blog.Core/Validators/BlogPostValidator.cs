@@ -4,44 +4,24 @@ namespace Blog.Core
 {
     public class BlogPostValidator : IBlogPostValidator
     {
-        public bool IsValidAuthorId(Guid authorId)
+        public void ValidateBlogPost(BlogPost blogPost)
         {
-            return true;
+            if (blogPost == null)
+                throw new ArgumentNullException("BlogPost cannot be null");
+            ValidatePostBody(blogPost.PostBody);
+            ValidatePostTitle(blogPost.PostTitle);
         }
 
-        public bool IsValidBlogPost(BlogPost blogPost)
-        {
-            return IsValidPostBody(blogPost.PostBody)
-                && IsValidPostTitle(blogPost.PostTitle);
-        }
-
-        public bool IsValidPostBody(string postBody)
+        private void ValidatePostBody(string postBody)
         {
             if (string.IsNullOrEmpty(postBody))
-                return false;
-            return true;
+                throw new ArgumentException("BlogPost.PostBody cannot be null or empty");
         }
 
-        public bool IsValidPostId(Guid postId)
-        {
-            return true;
-        }
-
-        public bool IsValidPostTitle(string postTitle)
+        private void ValidatePostTitle(string postTitle)
         {
             if (string.IsNullOrEmpty(postTitle))
-                return false;
-            return true;
-        }
-
-        public bool IsValidTimeCreated(DateTime timeCreated)
-        {
-            return true;
-        }
-
-        public bool IsValidTimeLastModified(DateTime timeLastModified)
-        {
-            return true;
+                throw new ArgumentException("BlogPost.PostBody cannot be null or empty");
         }
     }
 }

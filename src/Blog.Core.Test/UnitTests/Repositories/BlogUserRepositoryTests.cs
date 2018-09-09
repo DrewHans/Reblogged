@@ -9,12 +9,14 @@ namespace Blog.Core.Test
     public class BlogUserRepositoryTests : IDisposable
     {
         private MockIBlogUserDataAccessAdapter _mockDataAccess;
+        private MockIBlogUserValidator _mockValidator;
         private readonly BlogUserRepository _blogUserRepository;
 
         public BlogUserRepositoryTests()
         {
             _mockDataAccess = new MockIBlogUserDataAccessAdapter();
-            _blogUserRepository = new BlogUserRepository(_mockDataAccess);
+            _mockValidator = new MockIBlogUserValidator();
+            _blogUserRepository = new BlogUserRepository(_mockDataAccess, _mockValidator);
         }
 
         public void Dispose() { }
@@ -25,6 +27,7 @@ namespace Blog.Core.Test
             var param_blogUser = new StubBlogUser() as BlogUser;
             _blogUserRepository.Add(param_blogUser);
             _mockDataAccess.VerifyAdd(param_blogUser);
+            _mockValidator.VerifyValidateBlogUser(param_blogUser);
         }
 
         [Fact]
@@ -33,6 +36,7 @@ namespace Blog.Core.Test
             var param_blogUser = new StubBlogUser() as BlogUser;
             _blogUserRepository.Delete(param_blogUser);
             _mockDataAccess.VerifyDelete(param_blogUser);
+            _mockValidator.VerifyValidateBlogUser(param_blogUser);
         }
 
         [Fact]
@@ -41,6 +45,7 @@ namespace Blog.Core.Test
             var param_blogUser = new StubBlogUser() as BlogUser;
             _blogUserRepository.Edit(param_blogUser);
             _mockDataAccess.VerifyEdit(param_blogUser);
+            _mockValidator.VerifyValidateBlogUser(param_blogUser);
         }
 
         [Fact]
