@@ -5,7 +5,7 @@ namespace Blog.Core.Test.Fakes
 {
     public abstract class FakeISqlParameterBuilder : ISqlParameterBuilder
     {
-        private readonly Mock<ISqlParameterBuilder> _mockISqlParameterBuilder;
+        protected readonly Mock<ISqlParameterBuilder> _mockISqlParameterBuilder;
 
         public FakeISqlParameterBuilder()
         {

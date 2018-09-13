@@ -4,7 +4,7 @@ namespace Blog.Core.Test.Fakes
 {
     public abstract class FakeIFileReader : IFileReader
     {
-        private readonly Mock<IFileReader> _mockIFileReader;
+        protected readonly Mock<IFileReader> _mockIFileReader;
 
         public FakeIFileReader()
         {

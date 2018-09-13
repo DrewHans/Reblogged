@@ -4,7 +4,7 @@ namespace Blog.Core.Test.Fakes
 {
     public abstract class FakeIFileWriter : IFileWriter
     {
-        private readonly Mock<IFileWriter> _mockIFileWriter;
+        protected readonly Mock<IFileWriter> _mockIFileWriter;
 
         public FakeIFileWriter()
         {

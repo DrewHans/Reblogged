@@ -5,7 +5,7 @@ namespace Blog.Core.Test.Fakes
 {
     public abstract class FakeIWebApiDataAccess : IWebApiDataAccess
     {
-        private readonly Mock<IWebApiDataAccess> _mockIWebApiDataAccess;
+        protected readonly Mock<IWebApiDataAccess> _mockIWebApiDataAccess;
 
         public FakeIWebApiDataAccess()
         {

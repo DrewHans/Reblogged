@@ -5,7 +5,7 @@ namespace Blog.Core.Test.Fakes
 {
     public abstract class FakeIFileDataAccess<T> : IFileDataAccess<T>
     {
-        private readonly Mock<IFileDataAccess<T>> _mockIFileDataAccess;
+        protected readonly Mock<IFileDataAccess<T>> _mockIFileDataAccess;
 
         public FakeIFileDataAccess()
         {

@@ -6,7 +6,7 @@ namespace Blog.Core.Test.Fakes
 {
     public abstract class FakeISqlServerDataAccess : ISqlServerDataAccess
     {
-        private readonly Mock<ISqlServerDataAccess> _mockISqlServerDataAccess;
+        protected readonly Mock<ISqlServerDataAccess> _mockISqlServerDataAccess;
 
         public FakeISqlServerDataAccess()
         {
