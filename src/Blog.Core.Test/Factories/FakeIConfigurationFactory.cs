@@ -1,9 +1,8 @@
 using Blog.Core.Test.Fakes;
-using Microsoft.Extensions.Configuration;
 
 namespace Blog.Core.Test
 {
-    public class FakeIConfigurationFactory : IFactory<IConfiguration>
+    public class FakeIConfigurationFactory : IFactory<FakeIConfiguration>
     {
         private readonly FakeIConfiguration _fakeConfig;
 
@@ -12,19 +11,19 @@ namespace Blog.Core.Test
             _fakeConfig = new FakeIConfiguration();
         }
 
-        public IConfiguration Create()
+        public FakeIConfiguration Create()
         {
             return _fakeConfig;
         }
 
-        private FakeIConfigurationFactory StubFakeDataForFileDataAccess()
+        public FakeIConfigurationFactory StubFakeDataForFileDataAccess()
         {
             _fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath] = "fake/path/to/blogpost/database.json";
             _fakeConfig[KeyChain.FileDataAccess_BlogUser_DatabasePath] = "fake/path/to/bloguser/database.json";
             return this;
         }
 
-        private FakeIConfigurationFactory StubFakeDataForSqlServerDataAccess()
+        public FakeIConfigurationFactory StubFakeDataForSqlServerDataAccess()
         {
             _fakeConfig[KeyChain.SqlServerDataAccess_ConnectionString] = "Server=SomeServerName;Database=SomeDatabase;MoreSuperSecretFields=MoreSuperSecretValues;";
             _fakeConfig[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_Add] = "spBlogPostInsert";
@@ -42,7 +41,7 @@ namespace Blog.Core.Test
             return this;
         }
 
-        private FakeIConfigurationFactory StubFakeDataForWebApiDataAccess()
+        public FakeIConfigurationFactory StubFakeDataForWebApiDataAccess()
         {
             _fakeConfig[KeyChain.WebApiDataAccess_AuthScheme] = "Basic";
             _fakeConfig[KeyChain.WebApiDataAccess_AuthToken] = "UG9wdGFydA==";

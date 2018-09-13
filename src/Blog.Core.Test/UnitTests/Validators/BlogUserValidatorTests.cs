@@ -1,42 +1,35 @@
-using Blog.Core.Test.Stubs;
 using System;
 using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class BlogUserValidatorTests : IDisposable
+    public class BlogUserValidatorTests
     {
-        private readonly BlogUserValidator _blogUserValidator;
-
-        public BlogUserValidatorTests()
-        {
-            _blogUserValidator = new BlogUserValidator();
-        }
-
-        public void Dispose() { }
-
         [Fact]
         public void ValidateBlogUser_ValidBlogUser_Returns()
         {
-            var param_blogUser = new StubBlogUser() as BlogUser;
-            _blogUserValidator.ValidateBlogUser(param_blogUser);
+            var validator = new BlogUserValidator();
+            var param_blogUser = new BlogUserFactory().Create();
+            validator.ValidateBlogUser(param_blogUser);
         }
 
         [Fact]
         public void ValidateBlogUser_NullBlogUser_ThrowsException()
         {
+            var validator = new BlogUserValidator();
             BlogUser param_blogUser = null;
             Assert.Throws<ArgumentNullException>(
-                () => _blogUserValidator.ValidateBlogUser(param_blogUser));
+                () => validator.ValidateBlogUser(param_blogUser));
         }
 
         [Fact]
         public void ValidateBlogUser_PermissionsIsNull_ThrowsException()
         {
-            var param_blogUser = new StubBlogUser() as BlogUser;
+            var validator = new BlogUserValidator();
+            var param_blogUser = new BlogUserFactory().Create();
             param_blogUser.Permissions = null;
             Assert.Throws<ArgumentNullException>(
-                () => _blogUserValidator.ValidateBlogUser(param_blogUser));
+                () => validator.ValidateBlogUser(param_blogUser));
         }
 
         [Theory]
@@ -44,10 +37,11 @@ namespace Blog.Core.Test
         [InlineData(null)]
         public void ValidateBlogUser_PermissionsElementIsInvalid_ThrowsException(string invalidValue)
         {
-            var param_blogUser = new StubBlogUser() as BlogUser;
+            var validator = new BlogUserValidator();
+            var param_blogUser = new BlogUserFactory().Create();
             param_blogUser.Permissions.Add(invalidValue);
             Assert.Throws<ArgumentException>(
-                () => _blogUserValidator.ValidateBlogUser(param_blogUser));
+                () => validator.ValidateBlogUser(param_blogUser));
         }
 
         [Theory]
@@ -55,10 +49,11 @@ namespace Blog.Core.Test
         [InlineData(null)]
         public void ValidateBlogUser_UserNameIsInvalid_ThrowsException(string invalidValue)
         {
-            var param_blogUser = new StubBlogUser() as BlogUser;
+            var validator = new BlogUserValidator();
+            var param_blogUser = new BlogUserFactory().Create();
             param_blogUser.UserName = invalidValue;
             Assert.Throws<ArgumentException>(
-                () => _blogUserValidator.ValidateBlogUser(param_blogUser));
+                () => validator.ValidateBlogUser(param_blogUser));
         }
     }
 }

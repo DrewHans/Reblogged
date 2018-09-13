@@ -14,6 +14,11 @@ namespace Blog.Core.Test.Fakes
             set => _dictionary[key] = value;
         }
 
+        public FakeIConfiguration()
+        {
+            _dictionary = new Dictionary<string, string>();
+        }
+
         public IEnumerable<IConfigurationSection> GetChildren()
         {
             throw new System.NotImplementedException();

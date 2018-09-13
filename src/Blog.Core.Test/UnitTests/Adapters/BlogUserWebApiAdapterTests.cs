@@ -1,7 +1,5 @@
-using Blog.Core.Test.Mocks;
-using Blog.Core.Test.Stubs;
+using Blog.Core.Test.Fakes;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -9,76 +7,83 @@ using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class BlogUserWebApiAdapterTests : IDisposable
+    public class BlogUserWebApiAdapterTests
     {
-        private StubIConfiguration _stubConfiguration;
-        private MockIWebApiDataAccess _mockWebApiDataAccess;
-        private readonly BlogUserWebApiAdapter _blogUserAdapter;
-
-        public BlogUserWebApiAdapterTests()
-        {
-            _stubConfiguration = new StubIConfiguration();
-            _mockWebApiDataAccess = new MockIWebApiDataAccess();
-            _blogUserAdapter = new BlogUserWebApiAdapter(_stubConfiguration, _mockWebApiDataAccess);
-        }
-
-        public void Dispose() { }
-
         [Fact]
         public void Add_VerifySendRequestCalled()
         {
-            var param_entity = new StubBlogUser() as BlogUser;
-            var stub_response = new StubHttpResponseMessage(HttpStatusCode.OK) as HttpResponseMessage;
-            _mockWebApiDataAccess.StubSendRequest(stub_response);
-            _blogUserAdapter.Add(param_entity);
-            _mockWebApiDataAccess.VerifySendRequestCalled();
+            var fakeConfig = MakeFakeConfig();
+            var mockWebApiDataAccess = new MockIWebApiDataAccess();
+            var webApiAdapter = new BlogUserWebApiAdapter(fakeConfig, mockWebApiDataAccess);
+            var param_entity = new BlogUserFactory().Create();
+            mockWebApiDataAccess.StubSendRequest(MakeHttpResponseMessage(HttpStatusCode.OK));
+
+            webApiAdapter.Add(param_entity);
+
+            mockWebApiDataAccess.VerifySendRequestCalled(1);
         }
 
         [Fact]
         public void Delete_VerifySendRequestCalled()
         {
-            var param_entity = new StubBlogUser() as BlogUser;
-            var stub_response = new StubHttpResponseMessage(HttpStatusCode.OK) as HttpResponseMessage;
-            _mockWebApiDataAccess.StubSendRequest(stub_response);
-            _blogUserAdapter.Delete(param_entity);
-            _mockWebApiDataAccess.VerifySendRequestCalled();
+            var fakeConfig = MakeFakeConfig();
+            var mockWebApiDataAccess = new MockIWebApiDataAccess();
+            var webApiAdapter = new BlogUserWebApiAdapter(fakeConfig, mockWebApiDataAccess);
+            var param_entity = new BlogUserFactory().Create();
+            mockWebApiDataAccess.StubSendRequest(MakeHttpResponseMessage(HttpStatusCode.OK));
+
+            webApiAdapter.Delete(param_entity);
+
+            mockWebApiDataAccess.VerifySendRequestCalled(1);
         }
 
         [Fact]
         public void Edit_VerifySendRequestCalled()
         {
-            var param_entity = new StubBlogUser() as BlogUser;
-            var stub_response = new StubHttpResponseMessage(HttpStatusCode.OK) as HttpResponseMessage;
-            _mockWebApiDataAccess.StubSendRequest(stub_response);
-            _blogUserAdapter.Edit(param_entity);
-            _mockWebApiDataAccess.VerifySendRequestCalled();
+            var fakeConfig = MakeFakeConfig();
+            var mockWebApiDataAccess = new MockIWebApiDataAccess();
+            var webApiAdapter = new BlogUserWebApiAdapter(fakeConfig, mockWebApiDataAccess);
+            var param_entity = new BlogUserFactory().Create();
+            mockWebApiDataAccess.StubSendRequest(MakeHttpResponseMessage(HttpStatusCode.OK));
+
+            webApiAdapter.Edit(param_entity);
+
+            mockWebApiDataAccess.VerifySendRequestCalled(1);
         }
 
         [Fact]
         public void GetById_VerifySendRequestCalledAndExpectedBlogUserReturned()
         {
-            var stub_entity = new StubBlogUser() as BlogUser;
-            var stub_response = new StubHttpResponseMessage(HttpStatusCode.OK) as HttpResponseMessage;
-            stub_response.Content = new StringContent(JsonConvert.SerializeObject(stub_entity));
-            _mockWebApiDataAccess.StubSendRequest(stub_response);
-            var expected = stub_entity;
-            var actual = _blogUserAdapter.GetById(stub_entity.UserId);
-            _mockWebApiDataAccess.VerifySendRequestCalled();
-            AssertBlogUserAreEqual(expected, actual);
+            var fakeConfig = MakeFakeConfig();
+            var mockWebApiDataAccess = new MockIWebApiDataAccess();
+            var webApiAdapter = new BlogUserWebApiAdapter(fakeConfig, mockWebApiDataAccess);
+            var param_id = new BlogUserFactory().Create().UserId;
+            var expected_return = new BlogUserFactory().Create();
+            var stub_response = MakeHttpResponseMessage(HttpStatusCode.OK);
+            stub_response.Content = new StringContent(JsonConvert.SerializeObject(expected_return));
+            mockWebApiDataAccess.StubSendRequest(stub_response);
+
+            var actual_return = webApiAdapter.GetById(param_id);
+
+            mockWebApiDataAccess.VerifySendRequestCalled(1);
+            AssertBlogUserAreEqual(expected_return, actual_return);
         }
 
         [Fact]
         public void List_VerifySendRequestCalledAndExpectedListReturned()
         {
-            var stub_entity = new StubBlogUser() as BlogUser;
-            var stub_list = new List<BlogUser> { stub_entity };
-            var stub_response = new StubHttpResponseMessage(HttpStatusCode.OK) as HttpResponseMessage;
-            stub_response.Content = new StringContent(JsonConvert.SerializeObject(stub_list));
-            _mockWebApiDataAccess.StubSendRequest(stub_response);
-            var expected = stub_list;
-            var actual = _blogUserAdapter.List();
-            _mockWebApiDataAccess.VerifySendRequestCalled();
-            AssertListOfBlogUserAreEqual(expected, actual);
+            var fakeConfig = MakeFakeConfig();
+            var mockWebApiDataAccess = new MockIWebApiDataAccess();
+            var webApiAdapter = new BlogUserWebApiAdapter(fakeConfig, mockWebApiDataAccess);
+            var expected_return = new List<BlogUser> { new BlogUserFactory().Create() };
+            var stub_response = MakeHttpResponseMessage(HttpStatusCode.OK);
+            stub_response.Content = new StringContent(JsonConvert.SerializeObject(expected_return));
+            mockWebApiDataAccess.StubSendRequest(stub_response);
+
+            var actual_return = webApiAdapter.List();
+
+            mockWebApiDataAccess.VerifySendRequestCalled(1);
+            AssertListOfBlogUserAreEqual(expected_return, actual_return);
         }
 
         private void AssertBlogUserAreEqual(BlogUser expected, BlogUser actual)
@@ -94,6 +99,20 @@ namespace Blog.Core.Test
             Assert.Equal(expected.Count, actual.Count);
             for (int i = 0; i < expected.Count; i++)
                 AssertBlogUserAreEqual(expected[i], actual[i]);
+        }
+
+        private FakeIConfiguration MakeFakeConfig()
+        {
+            return new FakeIConfigurationFactory()
+                .StubFakeDataForWebApiDataAccess()
+                .Create();
+        }
+
+        private HttpResponseMessage MakeHttpResponseMessage(HttpStatusCode statusCode)
+        {
+            return new HttpResponseMessageFactory()
+                .StubHttpResponseMessage(statusCode)
+                .Create();
         }
     }
 }

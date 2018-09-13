@@ -1,74 +1,111 @@
-using Blog.Core.Test.Mocks;
-using Blog.Core.Test.Stubs;
-using System;
-using System.Collections.Generic;
+using Blog.Core.Test.Fakes;
 using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class BlogUserRepositoryTests : IDisposable
+    public class BlogUserRepositoryTests
     {
-        private MockIBlogUserDataAccessAdapter _mockDataAccess;
-        private MockIBlogUserValidator _mockValidator;
-        private readonly BlogUserRepository _blogUserRepository;
-
-        public BlogUserRepositoryTests()
-        {
-            _mockDataAccess = new MockIBlogUserDataAccessAdapter();
-            _mockValidator = new MockIBlogUserValidator();
-            _blogUserRepository = new BlogUserRepository(_mockDataAccess, _mockValidator);
-        }
-
-        public void Dispose() { }
-
         [Fact]
-        public void Add_ValidBlogUser_PassesParamToDataAccess()
+        public void Add_ValidBlogUser_VerifyValidator()
         {
-            var param_blogUser = new StubBlogUser() as BlogUser;
-            _blogUserRepository.Add(param_blogUser);
-            _mockDataAccess.VerifyAdd(param_blogUser);
-            _mockValidator.VerifyValidateBlogUser(param_blogUser);
+            var stubDataAccessAdapter = new StubIBlogUserDataAccessAdapter();
+            var mockValidator = new MockIBlogUserValidator();
+            var repository = new BlogUserRepository(stubDataAccessAdapter, mockValidator);
+            var param_blogUser = new BlogUserFactory().Create();
+
+            repository.Add(param_blogUser);
+
+            mockValidator.VerifyValidateBlogUser(param_blogUser);
         }
 
         [Fact]
-        public void Delete_ValidBlogUser_PassesParamToDataAccess()
+        public void Add_ValidBlogUser_VerifyDataAccessAdapter()
         {
-            var param_blogUser = new StubBlogUser() as BlogUser;
-            _blogUserRepository.Delete(param_blogUser);
-            _mockDataAccess.VerifyDelete(param_blogUser);
-            _mockValidator.VerifyValidateBlogUser(param_blogUser);
+            var mockDataAccessAdapter = new MockIBlogUserDataAccessAdapter();
+            var stubValidator = new StubIBlogUserValidator();
+            var repository = new BlogUserRepository(mockDataAccessAdapter, stubValidator);
+            var param_blogUser = new BlogUserFactory().Create();
+
+            repository.Add(param_blogUser);
+
+            mockDataAccessAdapter.VerifyAdd(param_blogUser);
         }
 
         [Fact]
-        public void Edit_ValidBlogUser_PassesParamToDataAccess()
+        public void Delete_ValidBlogUser_VerifyValidator()
         {
-            var param_blogUser = new StubBlogUser() as BlogUser;
-            _blogUserRepository.Edit(param_blogUser);
-            _mockDataAccess.VerifyEdit(param_blogUser);
-            _mockValidator.VerifyValidateBlogUser(param_blogUser);
+            var stubDataAccessAdapter = new StubIBlogUserDataAccessAdapter();
+            var mockValidator = new MockIBlogUserValidator();
+            var repository = new BlogUserRepository(stubDataAccessAdapter, mockValidator);
+            var param_blogUser = new BlogUserFactory().Create();
+
+            repository.Delete(param_blogUser);
+
+            mockValidator.VerifyValidateBlogUser(param_blogUser);
         }
 
         [Fact]
-        public void GetById_ValidBlogUser_PassesParamToDataAccess()
+        public void Delete_ValidBlogUser_VerifyDataAccessAdapter()
         {
-            var stub_blogUser = new StubBlogUser() as BlogUser;
-            _mockDataAccess.StubGetById(stub_blogUser);
-            var param_id = stub_blogUser.UserId;
-            var expected = stub_blogUser;
-            var actual = _blogUserRepository.GetById(param_id);
-            Assert.Equal(expected, actual);
-            _mockDataAccess.VerifyGetById(param_id);
+            var mockDataAccessAdapter = new MockIBlogUserDataAccessAdapter();
+            var stubValidator = new StubIBlogUserValidator();
+            var repository = new BlogUserRepository(mockDataAccessAdapter, stubValidator);
+            var param_blogUser = new BlogUserFactory().Create();
+
+            repository.Delete(param_blogUser);
+
+            mockDataAccessAdapter.VerifyDelete(param_blogUser);
         }
 
         [Fact]
-        public void List_ValidBlogUser_PassesParamToDataAccess()
+        public void Edit_ValidBlogUser_VerifyValidator()
         {
-            var stub_list = new List<BlogUser> { new StubBlogUser() as BlogUser };
-            _mockDataAccess.StubList(stub_list);
-            var expected = stub_list;
-            var actual = _blogUserRepository.List();
-            Assert.Equal(expected, actual);
-            _mockDataAccess.VerifyList();
+            var stubDataAccessAdapter = new StubIBlogUserDataAccessAdapter();
+            var mockValidator = new MockIBlogUserValidator();
+            var repository = new BlogUserRepository(stubDataAccessAdapter, mockValidator);
+            var param_blogUser = new BlogUserFactory().Create();
+
+            repository.Edit(param_blogUser);
+
+            mockValidator.VerifyValidateBlogUser(param_blogUser);
+        }
+
+        [Fact]
+        public void Edit_ValidBlogUser_VerifyDataAccessAdapter()
+        {
+            var mockDataAccessAdapter = new MockIBlogUserDataAccessAdapter();
+            var stubValidator = new StubIBlogUserValidator();
+            var repository = new BlogUserRepository(mockDataAccessAdapter, stubValidator);
+            var param_blogUser = new BlogUserFactory().Create();
+
+            repository.Edit(param_blogUser);
+
+            mockDataAccessAdapter.VerifyEdit(param_blogUser);
+        }
+
+        [Fact]
+        public void GetById_ValidBlogUser_VerifyDataAccessAdapter()
+        {
+            var mockDataAccessAdapter = new MockIBlogUserDataAccessAdapter();
+            var stubValidator = new StubIBlogUserValidator();
+            var repository = new BlogUserRepository(mockDataAccessAdapter, stubValidator);
+            var param_userId = new BlogUserFactory().Create().UserId;
+
+            repository.GetById(param_userId);
+
+            mockDataAccessAdapter.VerifyGetById(param_userId);
+        }
+
+        [Fact]
+        public void List_ValidBlogUser_VerifyDataAccessAdapter()
+        {
+            var mockDataAccessAdapter = new MockIBlogUserDataAccessAdapter();
+            var stubValidator = new StubIBlogUserValidator();
+            var repository = new BlogUserRepository(mockDataAccessAdapter, stubValidator);
+
+            repository.List();
+
+            mockDataAccessAdapter.VerifyList();
         }
     }
 }
