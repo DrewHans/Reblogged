@@ -1,164 +1,269 @@
-using Blog.Core.Test.Mocks;
-using Blog.Core.Test.Stubs;
-using System;
+using Blog.Core.Test.Fakes;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class BlogPostSqlServerAdapterTests : IDisposable
+    public class BlogPostSqlServerAdapterTests
     {
-        private StubIConfiguration _stubConfiguration;
-        private MockISqlParameterBuilder _mockSqlParameterBuilder;
-        private MockISqlServerDataAccess _mockSqlServerDataAccess;
-        private readonly BlogPostSqlServerAdapter _blogPostAdapter;
-
-        public BlogPostSqlServerAdapterTests()
-        {
-            _stubConfiguration = new StubIConfiguration();
-            _mockSqlParameterBuilder = new MockISqlParameterBuilder();
-            _mockSqlServerDataAccess = new MockISqlServerDataAccess();
-            _blogPostAdapter = new BlogPostSqlServerAdapter(_stubConfiguration,
-                _mockSqlServerDataAccess, _mockSqlParameterBuilder);
-        }
-
-        public void Dispose() { }
-
         [Fact]
-        public void Add_VerifyMethodsCalled()
+        public void Add_VerifySqlParamaterBuilder()
         {
-            var param_entity = new StubBlogPost() as BlogPost;
-            var stub_list = new List<SqlParameter>();
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            _mockSqlParameterBuilder.StubBuildSqlParameter<BlogPost>(stub_list);
-            var stub_rowsAffected = 1;
-            _mockSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(stub_rowsAffected);
-            _blogPostAdapter.Add(param_entity);
-            _mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(6);
-            _mockSqlServerDataAccess.VerifyExecuteNonQueryStoredProcedureCalled(1);
+            var fakeConfig = MakeFakeConfig();
+            var mockSqlParameterBuilder = new MockISqlParameterBuilder();
+            var stubSqlServerDataAccess = new StubISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                stubSqlServerDataAccess, mockSqlParameterBuilder);
+            var param_entity = new BlogPostFactory().Create();
+            stubSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(1);
+
+            sqlServerAdapter.Add(param_entity);
+
+            mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(6);
         }
 
         [Fact]
-        public void Delete_VerifyMethodsCalled()
+        public void Add_VerifySqlServerDataAccess()
         {
-            var param_entity = new StubBlogPost() as BlogPost;
-            var stub_list = new List<SqlParameter>();
-            stub_list.Add(MakeNewSqlParameter());
-            _mockSqlParameterBuilder.StubBuildSqlParameter<BlogPost>(stub_list);
-            var stub_rowsAffected = 1;
-            _mockSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(stub_rowsAffected);
-            _blogPostAdapter.Delete(param_entity);
-            _mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
-            _mockSqlServerDataAccess.VerifyExecuteNonQueryStoredProcedureCalled(1);
+            var fakeConfig = MakeFakeConfig();
+            var stubSqlParameterBuilder = new StubISqlParameterBuilder();
+            var mockSqlServerDataAccess = new MockISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                mockSqlServerDataAccess, stubSqlParameterBuilder);
+            var param_entity = new BlogPostFactory().Create();
+            mockSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(1);
+
+            sqlServerAdapter.Add(param_entity);
+
+            mockSqlServerDataAccess.VerifyExecuteNonQueryStoredProcedureCalled(1);
         }
 
         [Fact]
-        public void DeleteByAuthorId_VerifyMethodsCalled()
+        public void Delete_VerifySqlParamaterBuilder()
         {
-            var param_authorid = new StubBlogPost().AuthorId;
-            var stub_list = new List<SqlParameter>();
-            stub_list.Add(MakeNewSqlParameter());
-            _mockSqlParameterBuilder.StubBuildSqlParameter<BlogPost>(stub_list);
-            var stub_rowsAffected = 1;
-            _mockSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(stub_rowsAffected);
-            _blogPostAdapter.DeleteAllByAuthorId(param_authorid);
-            _mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
-            _mockSqlServerDataAccess.VerifyExecuteNonQueryStoredProcedureCalled(1);
+            var fakeConfig = MakeFakeConfig();
+            var mockSqlParameterBuilder = new MockISqlParameterBuilder();
+            var stubSqlServerDataAccess = new StubISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                stubSqlServerDataAccess, mockSqlParameterBuilder);
+            var param_entity = new BlogPostFactory().Create();
+            stubSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(1);
+
+            sqlServerAdapter.Delete(param_entity);
+
+            mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
         }
 
         [Fact]
-        public void Edit_VerifyMethodsCalled()
+        public void Delete_VerifySqlServerDataAccess()
         {
-            var param_entity = new StubBlogPost() as BlogPost;
-            var stub_list = new List<SqlParameter>();
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            stub_list.Add(MakeNewSqlParameter());
-            _mockSqlParameterBuilder.StubBuildSqlParameter<BlogPost>(stub_list);
-            var stub_rowsAffected = 1;
-            _mockSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(stub_rowsAffected);
-            _blogPostAdapter.Edit(param_entity);
-            _mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(6);
-            _mockSqlServerDataAccess.VerifyExecuteNonQueryStoredProcedureCalled(1);
+            var fakeConfig = MakeFakeConfig();
+            var stubSqlParameterBuilder = new StubISqlParameterBuilder();
+            var mockSqlServerDataAccess = new MockISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                mockSqlServerDataAccess, stubSqlParameterBuilder);
+            var param_entity = new BlogPostFactory().Create();
+            mockSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(1);
+
+            sqlServerAdapter.Delete(param_entity);
+
+            mockSqlServerDataAccess.VerifyExecuteNonQueryStoredProcedureCalled(1);
         }
 
         [Fact]
-        public void GetById_ListReturnedContainsBlogPost_VerifyMethodsCalledAndReturnsBlogPost()
+        public void DeleteAllByAuthorId_VerifySqlParamaterBuilder()
         {
-            var param_id = new StubBlogPost().PostId;
-            var stub_listOfSqlParams = new List<SqlParameter>();
-            stub_listOfSqlParams.Add(MakeNewSqlParameter());
-            _mockSqlParameterBuilder.StubBuildSqlParameter<BlogPost>(stub_listOfSqlParams);
-            var expected_blogpost = new StubBlogPost() as BlogPost;
+            var fakeConfig = MakeFakeConfig();
+            var mockSqlParameterBuilder = new MockISqlParameterBuilder();
+            var stubSqlServerDataAccess = new StubISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                stubSqlServerDataAccess, mockSqlParameterBuilder);
+            var param_id = new BlogPostFactory().Create().AuthorId;
+            stubSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(1);
+
+            sqlServerAdapter.DeleteAllByAuthorId(param_id);
+
+            mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
+        }
+
+        [Fact]
+        public void DeleteAllByAuthorId_VerifySqlServerDataAccess()
+        {
+            var fakeConfig = MakeFakeConfig();
+            var stubSqlParameterBuilder = new StubISqlParameterBuilder();
+            var mockSqlServerDataAccess = new MockISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                mockSqlServerDataAccess, stubSqlParameterBuilder);
+            var param_id = new BlogPostFactory().Create().AuthorId;
+            mockSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(1);
+
+            sqlServerAdapter.DeleteAllByAuthorId(param_id);
+
+            mockSqlServerDataAccess.VerifyExecuteNonQueryStoredProcedureCalled(1);
+        }
+
+        [Fact]
+        public void Edit_VerifySqlParamaterBuilder()
+        {
+            var fakeConfig = MakeFakeConfig();
+            var mockSqlParameterBuilder = new MockISqlParameterBuilder();
+            var stubSqlServerDataAccess = new StubISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                stubSqlServerDataAccess, mockSqlParameterBuilder);
+            var param_entity = new BlogPostFactory().Create();
+            stubSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(1);
+
+            sqlServerAdapter.Edit(param_entity);
+
+            mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(6);
+        }
+
+        [Fact]
+        public void Edit_VerifySqlServerDataAccess()
+        {
+            var fakeConfig = MakeFakeConfig();
+            var stubSqlParameterBuilder = new StubISqlParameterBuilder();
+            var mockSqlServerDataAccess = new MockISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                mockSqlServerDataAccess, stubSqlParameterBuilder);
+            var param_entity = new BlogPostFactory().Create();
+            mockSqlServerDataAccess.StubExecuteNonQueryStoredProcedure(1);
+
+            sqlServerAdapter.Edit(param_entity);
+
+            mockSqlServerDataAccess.VerifyExecuteNonQueryStoredProcedureCalled(1);
+        }
+
+        [Fact]
+        public void GetById_ListReturnedContainsBlogPost_VerifySqlParameterBuilder()
+        {
+            var fakeConfig = MakeFakeConfig();
+            var mockSqlParameterBuilder = new MockISqlParameterBuilder();
+            var stubSqlServerDataAccess = new StubISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                stubSqlServerDataAccess, mockSqlParameterBuilder);
+            var param_id = new BlogPostFactory().Create().PostId;
+            var expected_blogpost = new BlogPostFactory().Create();
             var stub_listOfBlogPost = new List<BlogPost> { expected_blogpost };
-            _mockSqlServerDataAccess.StubExecuteReaderStoredProcedure(stub_listOfBlogPost);
-            var returned_blogpost = _blogPostAdapter.GetById(param_id);
+            stubSqlServerDataAccess.StubExecuteReaderStoredProcedure(stub_listOfBlogPost);
+
+            var returned_blogpost = sqlServerAdapter.GetById(param_id);
+
             Assert.Equal(expected_blogpost, returned_blogpost);
-            _mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
-            _mockSqlServerDataAccess.VerifyExecuteReaderStoredProcedureCalled<BlogPost>(1);
+            mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
         }
 
         [Fact]
-        public void GetById_ListReturnedIsEmpty_VerifyMethodsCalledAndReturnsNull()
+        public void GetById_ListReturnedContainsBlogPost_VerifySqlServerDataAccess()
         {
-            var param_id = new StubBlogPost().PostId;
-            var stub_listOfSqlParams = new List<SqlParameter>();
-            stub_listOfSqlParams.Add(MakeNewSqlParameter());
-            _mockSqlParameterBuilder.StubBuildSqlParameter<BlogPost>(stub_listOfSqlParams);
-            var stub_listOfBlogPost = new List<BlogPost>();
-            _mockSqlServerDataAccess.StubExecuteReaderStoredProcedure(stub_listOfBlogPost);
-            var returned_blogpost = _blogPostAdapter.GetById(param_id);
+            var fakeConfig = MakeFakeConfig();
+            var stubSqlParameterBuilder = new StubISqlParameterBuilder();
+            var mockSqlServerDataAccess = new MockISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                mockSqlServerDataAccess, stubSqlParameterBuilder);
+            var param_id = new BlogPostFactory().Create().PostId;
+            var expected_blogpost = new BlogPostFactory().Create();
+            var stub_listOfBlogPost = new List<BlogPost> { expected_blogpost };
+            mockSqlServerDataAccess.StubExecuteReaderStoredProcedure(stub_listOfBlogPost);
+
+            var returned_blogpost = sqlServerAdapter.GetById(param_id);
+
+            Assert.Equal(expected_blogpost, returned_blogpost);
+            mockSqlServerDataAccess.VerifyExecuteReaderStoredProcedureCalled<BlogPost>(1);
+        }
+
+        [Fact]
+        public void GetById_ListReturnedIsEmpty_VerifySqlParameterBuilder()
+        {
+            var fakeConfig = MakeFakeConfig();
+            var mockSqlParameterBuilder = new MockISqlParameterBuilder();
+            var stubSqlServerDataAccess = new StubISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                stubSqlServerDataAccess, mockSqlParameterBuilder);
+            var param_id = new BlogPostFactory().Create().PostId;
+            stubSqlServerDataAccess.StubExecuteReaderStoredProcedure(new List<BlogPost>());
+
+            var returned_blogpost = sqlServerAdapter.GetById(param_id);
+
             Assert.Null(returned_blogpost);
-            _mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
-            _mockSqlServerDataAccess.VerifyExecuteReaderStoredProcedureCalled<BlogPost>(1);
+            mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
         }
 
         [Fact]
-        public void List_VerifyMethodsCalledAndReturnsList()
+        public void GetById_ListReturnedIsEmpty_VerifySqlServerDataAccess()
         {
-            var stub_blogpost = new StubBlogPost() as BlogPost;
-            var expected_listOfBlogPost = new List<BlogPost> { stub_blogpost };
-            _mockSqlServerDataAccess.StubExecuteReaderStoredProcedure(expected_listOfBlogPost);
-            var returned_listOfBlogpost = _blogPostAdapter.List();
-            Assert.Equal(expected_listOfBlogPost, returned_listOfBlogpost);
-            _mockSqlServerDataAccess.VerifyExecuteReaderStoredProcedureCalled<BlogPost>(1);
+            var fakeConfig = MakeFakeConfig();
+            var stubSqlParameterBuilder = new StubISqlParameterBuilder();
+            var mockSqlServerDataAccess = new MockISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                mockSqlServerDataAccess, stubSqlParameterBuilder);
+            var param_id = new BlogPostFactory().Create().PostId;
+            mockSqlServerDataAccess.StubExecuteReaderStoredProcedure(new List<BlogPost>());
+
+            var returned_blogpost = sqlServerAdapter.GetById(param_id);
+
+            Assert.Null(returned_blogpost);
+            mockSqlServerDataAccess.VerifyExecuteReaderStoredProcedureCalled<BlogPost>(1);
         }
 
         [Fact]
-        public void ListByAuthorId_VerifyMethodsCalledAndReturnsList()
+        public void List_VerifySqlServerDataAccess()
         {
-            var stub_listOfSqlParams = new List<SqlParameter>();
-            stub_listOfSqlParams.Add(MakeNewSqlParameter());
-            _mockSqlParameterBuilder.StubBuildSqlParameter<BlogPost>(stub_listOfSqlParams);
-            var stub_blogpost = new StubBlogPost() as BlogPost;
-            var expected_listOfBlogPost = new List<BlogPost> { stub_blogpost };
-            _mockSqlServerDataAccess.StubExecuteReaderStoredProcedure(expected_listOfBlogPost);
-            var returned_listOfBlogpost = _blogPostAdapter.ListByAuthorId(stub_blogpost.AuthorId);
+            var fakeConfig = MakeFakeConfig();
+            var stubSqlParameterBuilder = new StubISqlParameterBuilder();
+            var mockSqlServerDataAccess = new MockISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                mockSqlServerDataAccess, stubSqlParameterBuilder);
+            var expected_listOfBlogPost = new List<BlogPost> { new BlogPostFactory().Create() };
+            mockSqlServerDataAccess.StubExecuteReaderStoredProcedure(expected_listOfBlogPost);
+
+            var returned_listOfBlogpost = sqlServerAdapter.List();
+
             Assert.Equal(expected_listOfBlogPost, returned_listOfBlogpost);
-            _mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
-            _mockSqlServerDataAccess.VerifyExecuteReaderStoredProcedureCalled<BlogPost>(1);
+            mockSqlServerDataAccess.VerifyExecuteReaderStoredProcedureCalled<BlogPost>(1);
         }
 
-        private SqlParameter MakeNewSqlParameter()
+        [Fact]
+        public void ListByAuthorId_VerifySqlParameterBuilder()
         {
-            // Due to more Microsoft shenanigans SqlParameter class has
-            // the 'sealed' keyword. Therefore we cannot create a stub 
-            // class for SqlParameter like we did for BlogPost and BlogUser.
-            var stub_sqlParameter = new SqlParameter();
-            stub_sqlParameter.ParameterName = "Stub Name";
-            stub_sqlParameter.SqlDbType = SqlDbType.NChar;
-            stub_sqlParameter.Value = "Stub Value";
-            return stub_sqlParameter;
+            var fakeConfig = MakeFakeConfig();
+            var mockSqlParameterBuilder = new MockISqlParameterBuilder();
+            var stubSqlServerDataAccess = new StubISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                stubSqlServerDataAccess, mockSqlParameterBuilder);
+            var param_id = new BlogPostFactory().Create().AuthorId;
+            var expected_listOfBlogPost = new List<BlogPost> { new BlogPostFactory().Create() };
+            stubSqlServerDataAccess.StubExecuteReaderStoredProcedure(expected_listOfBlogPost);
+
+            var returned_listOfBlogpost = sqlServerAdapter.ListByAuthorId(param_id);
+
+            Assert.Equal(expected_listOfBlogPost, returned_listOfBlogpost);
+            mockSqlParameterBuilder.VerifyBuildSqlParameterCalled<BlogPost>(1);
+        }
+
+        [Fact]
+        public void ListByAuthorId_VerifySqlServerDataAccess()
+        {
+            var fakeConfig = MakeFakeConfig();
+            var stubSqlParameterBuilder = new StubISqlParameterBuilder();
+            var mockSqlServerDataAccess = new MockISqlServerDataAccess();
+            var sqlServerAdapter = new BlogPostSqlServerAdapter(fakeConfig,
+                mockSqlServerDataAccess, stubSqlParameterBuilder);
+            var param_id = new BlogPostFactory().Create().AuthorId;
+            var expected_listOfBlogPost = new List<BlogPost> { new BlogPostFactory().Create() };
+            mockSqlServerDataAccess.StubExecuteReaderStoredProcedure(expected_listOfBlogPost);
+
+            var returned_listOfBlogpost = sqlServerAdapter.ListByAuthorId(param_id);
+
+            Assert.Equal(expected_listOfBlogPost, returned_listOfBlogpost);
+            mockSqlServerDataAccess.VerifyExecuteReaderStoredProcedureCalled<BlogPost>(1);
+        }
+
+        private FakeIConfiguration MakeFakeConfig()
+        {
+            return new FakeIConfigurationFactory()
+                .StubFakeDataForSqlServerDataAccess()
+                .Create();
         }
     }
 }

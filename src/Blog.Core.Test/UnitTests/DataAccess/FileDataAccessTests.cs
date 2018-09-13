@@ -1,66 +1,65 @@
 using Blog.Core.Test.Fakes;
-using Blog.Core.Test.Mocks;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class FileDataAccessTests : IDisposable
+    public class FileDataAccessTests
     {
-        private MockIFileReader _mockFileReader;
-        private MockIFileWriter _mockFileWriter;
-        private readonly FileDataAccess<FakeBlogModel> _fileDataAccess;
-
-        public FileDataAccessTests()
-        {
-            _mockFileReader = new MockIFileReader();
-            _mockFileWriter = new MockIFileWriter();
-            _fileDataAccess = new FileDataAccess<FakeBlogModel>(_mockFileReader, _mockFileWriter);
-        }
-
-        public void Dispose() { }
-
         [Fact]
-        public void ClearDatabase_VerifyMockWriteMethodCalled()
+        public void ClearDatabase_VerifyWriter()
         {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
             var param_filePath = "path/to/the/file.json";
-            var param_entity = new FakeBlogModel();
-            var expected_appendToFile = false;
-            var expected_value = "";
-            _fileDataAccess.ClearDatabase(param_filePath);
-            _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
+
+            fileDataAccess.ClearDatabase(param_filePath);
+
+            mockWriter.VerifyWrite(param_filePath, false, "");
         }
 
         [Fact]
-        public void OverwriteToDatabase_ListOfEntityIsNull_VerifyMockWriteMethodNotCalled()
+        public void OverwriteToDatabase_ListOfEntityIsNull_VerifyWriter()
         {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
             var param_filePath = "path/to/the/file.json";
             List<FakeBlogModel> param_listOfEntity = null;
-            _fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
-            _mockFileWriter.VerifyWriteNotCalled();
+
+            fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
+
+            mockWriter.VerifyWriteNeverCalled();
         }
 
         [Fact]
-        public void OverwriteToDatabase_ListOfEntityIsEmpty_VerifyMockWriteMethodNotCalled()
+        public void OverwriteToDatabase_ListOfEntityIsEmpty_VerifyWriter()
         {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
             var param_filePath = "path/to/the/file.json";
             var param_listOfEntity = new List<FakeBlogModel>();
-            _fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
-            _mockFileWriter.VerifyWriteNotCalled();
+
+            fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
+
+            mockWriter.VerifyWriteNeverCalled();
         }
 
         [Fact]
-        public void OverwriteDatabase_ListOfEntityIsValid_VerifyMockWriteMethodCalled()
+        public void OverwriteDatabase_ListOfEntityIsValid_VerifyWriter()
         {
-            var stub_fakeBlogModel = new FakeBlogModel();
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
             var param_filePath = "path/to/the/file.json";
-            var param_listOfEntity = new List<FakeBlogModel> { stub_fakeBlogModel };
-            var expected_appendToFile = false;
-            var expected_value = JsonConvert.SerializeObject(param_listOfEntity);
-            _fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
-            _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
+            var param_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+
+            fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
+
+            mockWriter.VerifyWrite(param_filePath, false, JsonConvert.SerializeObject(param_listOfEntity));
         }
 
         [Theory]
@@ -68,124 +67,244 @@ namespace Blog.Core.Test
         [InlineData("")]
         public void ReadDatabase_FileContentsAreNullOrEmpty_ReturnsEmptyList(string stub_fileContents)
         {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
+            mockReader.StubRead(stub_fileContents);
             var param_filePath = "path/to/the/file.json";
-            _mockFileReader.StubRead(stub_fileContents);
-            var expected = new List<FakeBlogModel>();
-            var returned = _fileDataAccess.ReadDatabase(param_filePath);
-            Assert.Equal(expected, returned);
-            _mockFileReader.VerifyRead(param_filePath);
+            var expected_return = new List<FakeBlogModel>();
+
+            var actual_return = fileDataAccess.ReadDatabase(param_filePath);
+
+            mockReader.VerifyRead(param_filePath);
+            Assert.Equal(expected_return, actual_return);
         }
 
         [Fact]
         public void ReadDatabase_FileContainsOneObject_ReturnsListWithTheOneObject()
         {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
             var param_filePath = "path/to/the/file.json";
-            var stub_fakeBlogModel = new FakeBlogModel();
-            var stub_listOfEntity = new List<FakeBlogModel> { stub_fakeBlogModel };
+            var stub_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
             var stub_fileContents = JsonConvert.SerializeObject(stub_listOfEntity);
-            _mockFileReader.StubRead(stub_fileContents);
-            var expected = JsonConvert.DeserializeObject<List<FakeBlogModel>>(stub_fileContents);
-            var returned = _fileDataAccess.ReadDatabase(param_filePath);
-            AssertListOfFakeBlogModelAreEqual(expected, returned);
-            _mockFileReader.VerifyRead(param_filePath);
+            mockReader.StubRead(stub_fileContents);
+            var expected_return = JsonConvert.DeserializeObject<List<FakeBlogModel>>(stub_fileContents);
+
+            var actual_return = fileDataAccess.ReadDatabase(param_filePath);
+
+            mockReader.VerifyRead(param_filePath);
+            Assert.Equal(expected_return.Count, actual_return.Count);
+            Assert.Equal(expected_return[0].FakeProperty, actual_return[0].FakeProperty);
         }
 
         [Fact]
-        public void WriteToDatabase_EntityIsNull_VerifyMockWriteMethodNotCalled()
+        public void WriteToDatabase_EntityIsNull_VerifyReader()
         {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
             var param_filePath = "path/to/the/file.json";
             FakeBlogModel param_entity = null;
-            _fileDataAccess.WriteToDatabase(param_filePath, param_entity);
-            _mockFileWriter.VerifyWriteNotCalled();
-            _mockFileReader.VerifyReadNotCalled();
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
+
+            mockReader.VerifyReadNeverCalled();
         }
 
         [Fact]
-        public void WriteDatabase_EntityIsValidAndDatabaseIsEmpty_VerifyMockWriteMethodCalled()
+        public void WriteToDatabase_EntityIsNull_VerifyWriter()
         {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
+            var param_filePath = "path/to/the/file.json";
+            FakeBlogModel param_entity = null;
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
+
+            mockWriter.VerifyWriteNeverCalled();
+        }
+
+        [Fact]
+        public void WriteToDatabase_EntityIsValidAndDatabaseIsEmpty_VerifyReader()
+        {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
             var param_filePath = "path/to/the/file.json";
             var param_entity = new FakeBlogModel();
-            var expected_appendToFile = false;
-            var expected_listOfEntity = new List<FakeBlogModel> { param_entity };
-            var expected_value = JsonConvert.SerializeObject(expected_listOfEntity);
-            _fileDataAccess.WriteToDatabase(param_filePath, param_entity);
-            _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
-            _mockFileReader.VerifyRead(param_filePath);
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
+
+            mockReader.VerifyRead(param_filePath);
         }
 
         [Fact]
-        public void WriteDatabase_EntityIsValidAndDatabaseContainsOneObject_VerifyMockWriteMethodCalled()
+        public void WriteToDatabase_EntityIsValidAndDatabaseIsEmpty_VerifyWriter()
         {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
+            var param_filePath = "path/to/the/file.json";
+            FakeBlogModel param_entity = new FakeBlogModel();
+            var expected_listOfEntity = new List<FakeBlogModel> { param_entity };
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
+
+            mockWriter.VerifyWrite(param_filePath, false, JsonConvert.SerializeObject(expected_listOfEntity));
+        }
+
+        [Fact]
+        public void WriteToDatabase_EntityIsValidAndDatabaseContainsOneObject_VerifyReader()
+        {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_entity = new FakeBlogModel();
+            var stub_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+            mockReader.StubRead(JsonConvert.SerializeObject(stub_listOfEntity));
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
+
+            mockReader.VerifyRead(param_filePath);
+        }
+
+        [Fact]
+        public void WriteToDatabase_EntityIsValidAndDatabaseContainsOneObject_VerifyWriter()
+        {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
             var param_filePath = "path/to/the/file.json";
             var param_entity = new FakeBlogModel();
             var stub_fakeBlogModel = new FakeBlogModel();
             var stub_listOfEntity = new List<FakeBlogModel> { stub_fakeBlogModel };
             var stub_fileContents = JsonConvert.SerializeObject(stub_listOfEntity);
-            _mockFileReader.StubRead(stub_fileContents);
+            stubReader.StubRead(stub_fileContents);
             stub_listOfEntity.Add(param_entity);
-            var expected_appendToFile = false;
-            var expected_listOfEntity = stub_listOfEntity;
-            var expected_value = JsonConvert.SerializeObject(expected_listOfEntity);
-            _fileDataAccess.WriteToDatabase(param_filePath, param_entity);
-            _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
-            _mockFileReader.VerifyRead(param_filePath);
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
+
+            mockWriter.VerifyWrite(param_filePath, false, JsonConvert.SerializeObject(stub_listOfEntity));
         }
 
         [Fact]
-        public void WriteToDatabase_ListOfEntityIsNull_VerifyMockWriteMethodNotCalled()
+        public void WriteToDatabase_ListOfEntityIsNull_VerifyReader()
         {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
             var param_filePath = "path/to/the/file.json";
             List<FakeBlogModel> param_listOfEntity = null;
-            _fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
-            _mockFileWriter.VerifyWriteNotCalled();
-            _mockFileReader.VerifyReadNotCalled();
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+
+            mockReader.VerifyReadNeverCalled();
         }
 
         [Fact]
-        public void WriteToDatabase_ListOfEntityIsEmpty_VerifyMockWriteMethodNotCalled()
+        public void WriteToDatabase_ListOfEntityIsNull_VerifyWriter()
         {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
+            var param_filePath = "path/to/the/file.json";
+            List<FakeBlogModel> param_listOfEntity = null;
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+
+            mockWriter.VerifyWriteNeverCalled();
+        }
+
+        [Fact]
+        public void WriteToDatabase_ListOfEntityIsEmpty_VerifyReader()
+        {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
             var param_filePath = "path/to/the/file.json";
             var param_listOfEntity = new List<FakeBlogModel>();
-            _fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
-            _mockFileWriter.VerifyWriteNotCalled();
-            _mockFileReader.VerifyReadNotCalled();
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+
+            mockReader.VerifyReadNeverCalled();
         }
 
         [Fact]
-        public void WriteDatabase_ListOfEntityIsValidAndDatabaseIsEmpty_VerifyMockWriteMethodCalled()
+        public void WriteToDatabase_ListOfEntityIsEmpty_VerifyWriter()
         {
-            var stub_fakeBlogModel = new FakeBlogModel();
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
             var param_filePath = "path/to/the/file.json";
-            var param_listOfEntity = new List<FakeBlogModel> { stub_fakeBlogModel };
-            var expected_appendToFile = false;
-            var expected_value = JsonConvert.SerializeObject(param_listOfEntity);
-            _fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
-            _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
-            _mockFileReader.VerifyRead(param_filePath);
+            var param_listOfEntity = new List<FakeBlogModel>();
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+
+            mockWriter.VerifyWriteNeverCalled();
         }
 
         [Fact]
-        public void WriteDatabase_ListOfEntityIsValidAndDatabaseContainsOneObject_VerifyMockWriteMethodCalled()
+        public void WriteDatabase_ListOfEntityIsValidAndDatabaseIsEmpty_VerifyReader()
         {
-            var stub_fakeBlogModel = new FakeBlogModel();
-            var stub_listOfEntity = new List<FakeBlogModel> { stub_fakeBlogModel };
-            var stub_fileContents = JsonConvert.SerializeObject(stub_listOfEntity);
-            _mockFileReader.StubRead(stub_fileContents);
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
             var param_filePath = "path/to/the/file.json";
-            var param_listOfEntity = new List<FakeBlogModel> { stub_fakeBlogModel };
+            var param_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+
+            mockReader.VerifyRead(param_filePath);
+        }
+
+        [Fact]
+        public void WriteDatabase_ListOfEntityIsValidAndDatabaseIsEmpty_VerifyWriter()
+        {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+
+            mockWriter.VerifyWrite(param_filePath, false, JsonConvert.SerializeObject(param_listOfEntity));
+        }
+
+        [Fact]
+        public void WriteDatabase_ListOfEntityIsValidAndDatabaseContainsOneObject_VerifyReader()
+        {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+            mockReader.StubRead(JsonConvert.SerializeObject(param_listOfEntity));
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+
+            mockReader.VerifyRead(param_filePath);
+        }
+
+        [Fact]
+        public void WriteDatabase_ListOfEntityIsValidAndDatabaseContainsOneObject_VerifyWriter()
+        {
+            var stubReader = new StubIFileReader();
+            var mockWriter = new MockIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, mockWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+            var stub_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+            stubReader.StubRead(JsonConvert.SerializeObject(stub_listOfEntity));
             stub_listOfEntity.AddRange(param_listOfEntity);
-            var expected_appendToFile = false;
-            var expected_value = JsonConvert.SerializeObject(stub_listOfEntity);
-            _fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
-            _mockFileWriter.VerifyWrite(param_filePath, expected_appendToFile, expected_value);
-            _mockFileReader.VerifyRead(param_filePath);
-        }
 
-        private void AssertListOfFakeBlogModelAreEqual(List<FakeBlogModel> expected, List<FakeBlogModel> actual)
-        {
-            Assert.Equal(expected.Count, actual.Count);
-            for (int i = 0; i < expected.Count; i++)
-                Assert.Equal(expected[i].FakeProperty, actual[i].FakeProperty);
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+
+            mockWriter.VerifyWrite(param_filePath, false, JsonConvert.SerializeObject(stub_listOfEntity));
         }
     }
 }

@@ -1,25 +1,21 @@
 using Blog.Core.Test.Fakes;
-using System;
 using System.Data;
 using System.Data.SqlClient;
 using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class SqlParameterBuilderTests : IDisposable
+    public class FakeModelWithoutAttributes
     {
-        private readonly SqlParameterBuilder _sqlParameterBuilder;
+        public string FakeProperty { get; set; } = "fake value";
+    }
 
-        public SqlParameterBuilderTests()
-        {
-            _sqlParameterBuilder = new SqlParameterBuilder();
-        }
-
-        public void Dispose() { }
-
+    public class SqlParameterBuilderTests
+    {
         [Fact]
         public void BuildSqlParameter_ModelWithAttributes_ReturnsExpectedSqlParameter()
         {
+            var sqlParamBuilder = new SqlParameterBuilder();
             var fakeModelWithAttributes = new FakeBlogModel();
             var param_propertyName = "FakeProperty";
             var param_propertyValue = fakeModelWithAttributes.FakeProperty;
@@ -29,18 +25,22 @@ namespace Blog.Core.Test
                 SqlDbType = SqlDbType.NChar,
                 Value = param_propertyValue
             };
-            var actual = _sqlParameterBuilder.BuildSqlParameter<FakeBlogModel>(param_propertyName, param_propertyValue);
+
+            var actual = sqlParamBuilder.BuildSqlParameter<FakeBlogModel>(param_propertyName, param_propertyValue);
+
             AssertSqlParameterEqual(expected, actual);
         }
 
         [Fact]
         public void BuildSqlParameter_ModelWithoutAttributes_ThrowsException()
         {
+            var sqlParamBuilder = new SqlParameterBuilder();
             var fakeModelWithoutAttributes = new FakeModelWithoutAttributes();
             var param_propertyName = "FakeProperty";
             var param_propertyValue = fakeModelWithoutAttributes.FakeProperty;
+
             Assert.Throws<MissingAttributeException>(
-                () => _sqlParameterBuilder.BuildSqlParameter<FakeModelWithoutAttributes>(
+                () => sqlParamBuilder.BuildSqlParameter<FakeModelWithoutAttributes>(
                     param_propertyName, param_propertyValue));
         }
 

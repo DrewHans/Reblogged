@@ -3,10 +3,8 @@ using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class DataAccessExceptionTests : IDisposable
+    public class DataAccessExceptionTests
     {
-        public void Dispose() { }
-
         [Fact]
         public void DataAccessException_InitTest()
         {

@@ -1,12 +1,9 @@
-using System;
 using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class MissingAttributeExceptionTests : IDisposable
+    public class MissingAttributeExceptionTests
     {
-        public void Dispose() { }
-
         [Fact]
         public void MissingAttributeException_InitTest()
         {

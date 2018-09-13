@@ -1,124 +1,145 @@
-using Blog.Core.Test.Mocks;
-using Blog.Core.Test.Stubs;
+using Blog.Core.Test.Fakes;
 using System;
 using System.Collections.Generic;
 using Xunit;
 
 namespace Blog.Core.Test
 {
-    public class BlogPostFileAdapterTests : IDisposable
+    public class BlogPostFileAdapterTests
     {
-        private StubIConfiguration _stubConfiguration;
-        private MockIFileDataAccess<BlogPost> _mockFileDataAccess;
-        private readonly BlogPostFileAdapter _blogPostAdapter;
-
-        public BlogPostFileAdapterTests()
-        {
-            _stubConfiguration = new StubIConfiguration();
-            _mockFileDataAccess = new MockIFileDataAccess<BlogPost>();
-            _blogPostAdapter = new BlogPostFileAdapter(_stubConfiguration, _mockFileDataAccess);
-        }
-
-        public void Dispose() { }
-
         [Fact]
-        public void Add_VerifyWriteToDatabaseCalled()
+        public void Add_VerifyDataAccess()
         {
-            var param_entity = new StubBlogPost() as BlogPost;
-            var expected_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
-            _blogPostAdapter.Add(param_entity);
-            _mockFileDataAccess.VerifyWriteToDatabase(expected_filePath, param_entity);
+            var fakeConfig = new FakeIConfigurationFactory().StubFakeDataForFileDataAccess().Create();
+            var mockFileDataAccess = new MockIFileDataAccess<BlogPost>();
+            var fileAdapter = new BlogPostFileAdapter(fakeConfig, mockFileDataAccess);
+            var param_entity = new BlogPostFactory().Create();
+            var expectedfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+
+            fileAdapter.Add(param_entity);
+
+            mockFileDataAccess.VerifyWriteToDatabase(expectedfilePath, param_entity);
         }
 
         [Fact]
-        public void Delete_VerifyReadDatabaseAndOverwriteDatabaseCalled()
+        public void Delete_VerifyDataAccess()
         {
-            var param_entity = new StubBlogPost() as BlogPost;
-            var stub_blogPost = new StubBlogPost() as BlogPost;
+            var fakeConfig = new FakeIConfigurationFactory().StubFakeDataForFileDataAccess().Create();
+            var mockFileDataAccess = new MockIFileDataAccess<BlogPost>();
+            var fileAdapter = new BlogPostFileAdapter(fakeConfig, mockFileDataAccess);
+            var param_entity = new BlogPostFactory().Create();
+            var stub_blogPost = new BlogPostFactory().Create();
             stub_blogPost.PostId = Guid.Parse("55555555-5555-5555-5555-555555555555");
             var stub_list = new List<BlogPost> { param_entity, stub_blogPost };
-            _mockFileDataAccess.StubReadDatabase(stub_list);
-            var expected_readDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
-            var expected_overwriteDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            mockFileDataAccess.StubReadDatabase(stub_list);
+            var expected_readDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            var expected_overwriteDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             var expected_overwriteDB_newList = new List<BlogPost> { stub_blogPost };
-            _blogPostAdapter.Delete(param_entity);
-            _mockFileDataAccess.VerifyReadDatabase(expected_readDB_filePath);
-            _mockFileDataAccess.VerifyOverwriteDatabase(expected_overwriteDB_filePath, expected_overwriteDB_newList);
+
+            fileAdapter.Delete(param_entity);
+
+            mockFileDataAccess.VerifyReadDatabase(expected_readDBfilePath);
+            mockFileDataAccess.VerifyOverwriteDatabase(expected_overwriteDBfilePath, expected_overwriteDB_newList);
         }
 
         [Fact]
-        public void DeleteByAuthorId_VerifyReadDatabaseAndOverwriteDatabaseCalled()
+        public void DeleteByAuthorId_VerifyDataAccess()
         {
-            var stub_blogPost1 = new StubBlogPost() as BlogPost;
-            var stub_blogPost2 = new StubBlogPost() as BlogPost;
+            var fakeConfig = new FakeIConfigurationFactory().StubFakeDataForFileDataAccess().Create();
+            var mockFileDataAccess = new MockIFileDataAccess<BlogPost>();
+            var fileAdapter = new BlogPostFileAdapter(fakeConfig, mockFileDataAccess);
+            var stub_blogPost1 = new BlogPostFactory().Create();
+            var stub_blogPost2 = new BlogPostFactory().Create();
             stub_blogPost2.AuthorId = Guid.Parse("55555555-5555-5555-5555-555555555555");
             var stub_list = new List<BlogPost> { stub_blogPost1, stub_blogPost2 };
-            _mockFileDataAccess.StubReadDatabase(stub_list);
-            var expected_readDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
-            var expected_overwriteDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            mockFileDataAccess.StubReadDatabase(stub_list);
+            var expected_readDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            var expected_overwriteDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             var expected_overwriteDB_newList = new List<BlogPost> { stub_blogPost1 };
-            _blogPostAdapter.DeleteAllByAuthorId(stub_blogPost2.AuthorId);
-            _mockFileDataAccess.VerifyReadDatabase(expected_readDB_filePath);
-            _mockFileDataAccess.VerifyOverwriteDatabase(expected_overwriteDB_filePath, expected_overwriteDB_newList);
+
+            fileAdapter.DeleteAllByAuthorId(stub_blogPost2.AuthorId);
+
+            mockFileDataAccess.VerifyReadDatabase(expected_readDBfilePath);
+            mockFileDataAccess.VerifyOverwriteDatabase(expected_overwriteDBfilePath, expected_overwriteDB_newList);
         }
 
         [Fact]
-        public void Edit_VerifyReadDatabaseAndOverwriteDatabaseCalled()
+        public void Edit_VerifyDataAccess()
         {
-            var param_entity = new StubBlogPost() as BlogPost;
-            var stub_blogPost = new StubBlogPost() as BlogPost;
+            var fakeConfig = new FakeIConfigurationFactory().StubFakeDataForFileDataAccess().Create();
+            var mockFileDataAccess = new MockIFileDataAccess<BlogPost>();
+            var fileAdapter = new BlogPostFileAdapter(fakeConfig, mockFileDataAccess);
+            var param_entity = new BlogPostFactory().Create();
+            var stub_blogPost = new BlogPostFactory().Create();
             stub_blogPost.PostId = Guid.Parse("55555555-5555-5555-5555-555555555555");
             var stub_list = new List<BlogPost> { param_entity, stub_blogPost };
-            _mockFileDataAccess.StubReadDatabase(stub_list);
+            mockFileDataAccess.StubReadDatabase(stub_list);
             param_entity.PostBody = "This is an edited PostBody!";
-            var expected_readDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
-            var expected_overwriteDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            var expected_readDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            var expected_overwriteDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             var expected_overwriteDB_newList = new List<BlogPost> { stub_blogPost, param_entity };
-            _blogPostAdapter.Edit(param_entity);
-            _mockFileDataAccess.VerifyReadDatabase(expected_readDB_filePath);
-            _mockFileDataAccess.VerifyOverwriteDatabase(expected_overwriteDB_filePath, expected_overwriteDB_newList);
+
+            fileAdapter.Edit(param_entity);
+
+            mockFileDataAccess.VerifyReadDatabase(expected_readDBfilePath);
+            mockFileDataAccess.VerifyOverwriteDatabase(expected_overwriteDBfilePath, expected_overwriteDB_newList);
         }
 
         [Fact]
-        public void GetById_VerifyReadDatabaseCalledAndExpectedBlogPostReturned()
+        public void GetById_ReturnsExpectedBlogPost()
         {
-            var stub_blogPost1 = new StubBlogPost() as BlogPost;
-            var stub_blogPost2 = new StubBlogPost() as BlogPost;
+            var fakeConfig = new FakeIConfigurationFactory().StubFakeDataForFileDataAccess().Create();
+            var mockFileDataAccess = new MockIFileDataAccess<BlogPost>();
+            var fileAdapter = new BlogPostFileAdapter(fakeConfig, mockFileDataAccess);
+            var stub_blogPost1 = new BlogPostFactory().Create();
+            var stub_blogPost2 = new BlogPostFactory().Create();
             stub_blogPost2.PostId = Guid.Parse("55555555-5555-5555-5555-555555555555");
             var stub_list = new List<BlogPost> { stub_blogPost1, stub_blogPost2 };
-            _mockFileDataAccess.StubReadDatabase(stub_list);
-            var expected_readDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            mockFileDataAccess.StubReadDatabase(stub_list);
+            var expected_readDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             var expected = stub_blogPost2;
-            var actual = _blogPostAdapter.GetById(stub_blogPost2.PostId);
-            _mockFileDataAccess.VerifyReadDatabase(expected_readDB_filePath);
+
+            var actual = fileAdapter.GetById(stub_blogPost2.PostId);
+
+            mockFileDataAccess.VerifyReadDatabase(expected_readDBfilePath);
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void List_VerifyReadDatabaseCalledAndExpectedListReturned()
+        public void List_ReturnsExpectedList()
         {
-            var stub_blogPost = new StubBlogPost() as BlogPost;
+            var fakeConfig = new FakeIConfigurationFactory().StubFakeDataForFileDataAccess().Create();
+            var mockFileDataAccess = new MockIFileDataAccess<BlogPost>();
+            var fileAdapter = new BlogPostFileAdapter(fakeConfig, mockFileDataAccess);
+            var stub_blogPost = new BlogPostFactory().Create();
             var stub_list = new List<BlogPost> { stub_blogPost };
-            _mockFileDataAccess.StubReadDatabase(stub_list);
-            var expected_readDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            mockFileDataAccess.StubReadDatabase(stub_list);
+            var expected_readDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             var expected = stub_list;
-            var actual = _blogPostAdapter.List();
-            _mockFileDataAccess.VerifyReadDatabase(expected_readDB_filePath);
+
+            var actual = fileAdapter.List();
+
+            mockFileDataAccess.VerifyReadDatabase(expected_readDBfilePath);
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void ListByAuthorId_VerifyReadDatabaseCalledAndExpectedListReturned()
+        public void ListByAuthorId_ReturnsExpectedList()
         {
-            var stub_blogPost1 = new StubBlogPost() as BlogPost;
-            var stub_blogPost2 = new StubBlogPost() as BlogPost;
+            var fakeConfig = new FakeIConfigurationFactory().StubFakeDataForFileDataAccess().Create();
+            var mockFileDataAccess = new MockIFileDataAccess<BlogPost>();
+            var fileAdapter = new BlogPostFileAdapter(fakeConfig, mockFileDataAccess);
+            var stub_blogPost1 = new BlogPostFactory().Create();
+            var stub_blogPost2 = new BlogPostFactory().Create();
             stub_blogPost2.AuthorId = Guid.Parse("55555555-5555-5555-5555-555555555555");
             var stub_list = new List<BlogPost> { stub_blogPost1, stub_blogPost2 };
-            _mockFileDataAccess.StubReadDatabase(stub_list);
-            var expected_readDB_filePath = _stubConfiguration[KeyChain.FileDataAccess_BlogPost_DatabasePath];
+            mockFileDataAccess.StubReadDatabase(stub_list);
+            var expected_readDBfilePath = fakeConfig[KeyChain.FileDataAccess_BlogPost_DatabasePath];
             var expected = new List<BlogPost> { stub_blogPost2 };
-            var actual = _blogPostAdapter.ListByAuthorId(stub_blogPost2.AuthorId);
-            _mockFileDataAccess.VerifyReadDatabase(expected_readDB_filePath);
+
+            var actual = fileAdapter.ListByAuthorId(stub_blogPost2.AuthorId);
+            
+            mockFileDataAccess.VerifyReadDatabase(expected_readDBfilePath);
             Assert.Equal(expected, actual);
         }
     }
