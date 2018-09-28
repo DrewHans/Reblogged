@@ -30,10 +30,13 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
     │  │  └─ Program.cs
     │  │
     │  ├─ Blog.Core.Test/       # Blog.Core testing logic lives here
-    │  │  ├─ Fakes/             # Fake objects not in Blog.Core (help with testing)
-    │  │  ├─ Mocks/             # Mock interface implementations powered by Moq
-    │  │  ├─ Stubs/             # Stubs objects provide models with test data
-    │  │  ├─ UnitTests/         # Unit Tests live here (not integration tests!)
+    │  │  ├─ Factories/         # Objects responsible for creating other objects used in tests
+    │  │  │
+    │  │  ├─ Fakes/             # Abstact (fake) objects that implement Blog.Core interfaces
+    │  │  │  ├─ Mocks/          # Objects with mocking functionality (inherit from Stubs)
+    │  │  │  └─ Stubs/          # Objects with stubbing functionality (inherit from Fakes)
+    │  │  │
+    │  │  ├─ UnitTests/         # Unit Tests live here (not integration tests)
     │  │  │
     │  │  ├─ Blog.Core.Test.csproj
     │  │  ├─ genreport.bash     # Runs ReportGenerator on opencover.xml report
