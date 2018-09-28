@@ -8,6 +8,17 @@ namespace Blog.Core.Test
     public class FileDataAccessTests
     {
         [Fact]
+        public void ClearDatabase_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+
+            fileDataAccess.ClearDatabase(param_filePath);
+        }
+
+        [Fact]
         public void ClearDatabase_VerifyWriter()
         {
             var stubReader = new StubIFileReader();
@@ -49,6 +60,18 @@ namespace Blog.Core.Test
         }
 
         [Fact]
+        public void OverwriteDatabase_ListOfEntityIsValid_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+
+            fileDataAccess.OverwriteDatabase(param_filePath, param_listOfEntity);
+        }
+
+        [Fact]
         public void OverwriteDatabase_ListOfEntityIsValid_VerifyWriter()
         {
             var stubReader = new StubIFileReader();
@@ -67,21 +90,54 @@ namespace Blog.Core.Test
         [InlineData("")]
         public void ReadDatabase_FileContentsAreNullOrEmpty_ReturnsEmptyList(string stub_fileContents)
         {
-            var mockReader = new MockIFileReader();
+            var stubReader = new StubIFileReader();
             var stubWriter = new StubIFileWriter();
-            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
-            mockReader.StubRead(stub_fileContents);
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            stubReader.StubRead(stub_fileContents);
             var param_filePath = "path/to/the/file.json";
             var expected_return = new List<FakeBlogModel>();
 
             var actual_return = fileDataAccess.ReadDatabase(param_filePath);
 
-            mockReader.VerifyRead(param_filePath);
             Assert.Equal(expected_return, actual_return);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void ReadDatabase_FileContentsAreNullOrEmpty_VerifyReader(string stub_fileContents)
+        {
+            var mockReader = new MockIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(mockReader, stubWriter);
+            mockReader.StubRead(stub_fileContents);
+            var param_filePath = "path/to/the/file.json";
+
+            fileDataAccess.ReadDatabase(param_filePath);
+
+            mockReader.VerifyRead(param_filePath);
         }
 
         [Fact]
         public void ReadDatabase_FileContainsOneObject_ReturnsListWithTheOneObject()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var stub_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+            var stub_fileContents = JsonConvert.SerializeObject(stub_listOfEntity);
+            stubReader.StubRead(stub_fileContents);
+            var expected_return = JsonConvert.DeserializeObject<List<FakeBlogModel>>(stub_fileContents);
+
+            var actual_return = fileDataAccess.ReadDatabase(param_filePath);
+
+            Assert.Equal(expected_return.Count, actual_return.Count);
+            Assert.Equal(expected_return[0].FakeProperty, actual_return[0].FakeProperty);
+        }
+
+        [Fact]
+        public void ReadDatabase_FileContainsOneObject_VerifyReader()
         {
             var mockReader = new MockIFileReader();
             var stubWriter = new StubIFileWriter();
@@ -90,13 +146,22 @@ namespace Blog.Core.Test
             var stub_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
             var stub_fileContents = JsonConvert.SerializeObject(stub_listOfEntity);
             mockReader.StubRead(stub_fileContents);
-            var expected_return = JsonConvert.DeserializeObject<List<FakeBlogModel>>(stub_fileContents);
 
-            var actual_return = fileDataAccess.ReadDatabase(param_filePath);
+            fileDataAccess.ReadDatabase(param_filePath);
 
             mockReader.VerifyRead(param_filePath);
-            Assert.Equal(expected_return.Count, actual_return.Count);
-            Assert.Equal(expected_return[0].FakeProperty, actual_return[0].FakeProperty);
+        }
+
+        [Fact]
+        public void WriteToDatabase_EntityIsNull_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            FakeBlogModel param_entity = null;
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
         }
 
         [Fact]
@@ -128,6 +193,18 @@ namespace Blog.Core.Test
         }
 
         [Fact]
+        public void WriteToDatabase_EntityIsValidAndDatabaseIsEmpty_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_entity = new FakeBlogModel();
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
+        }
+
+        [Fact]
         public void WriteToDatabase_EntityIsValidAndDatabaseIsEmpty_VerifyReader()
         {
             var mockReader = new MockIFileReader();
@@ -154,6 +231,20 @@ namespace Blog.Core.Test
             fileDataAccess.WriteToDatabase(param_filePath, param_entity);
 
             mockWriter.VerifyWrite(param_filePath, false, JsonConvert.SerializeObject(expected_listOfEntity));
+        }
+
+        [Fact]
+        public void WriteToDatabase_EntityIsValidAndDatabaseContainsOneObject_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_entity = new FakeBlogModel();
+            var stub_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+            stubReader.StubRead(JsonConvert.SerializeObject(stub_listOfEntity));
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_entity);
         }
 
         [Fact]
@@ -192,6 +283,18 @@ namespace Blog.Core.Test
         }
 
         [Fact]
+        public void WriteToDatabase_ListOfEntityIsNull_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            List<FakeBlogModel> param_listOfEntity = null;
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+        }
+
+        [Fact]
         public void WriteToDatabase_ListOfEntityIsNull_VerifyReader()
         {
             var mockReader = new MockIFileReader();
@@ -217,6 +320,18 @@ namespace Blog.Core.Test
             fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
 
             mockWriter.VerifyWriteNeverCalled();
+        }
+
+        [Fact]
+        public void WriteToDatabase_ListOfEntityIsEmpty_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_listOfEntity = new List<FakeBlogModel>();
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
         }
 
         [Fact]
@@ -248,7 +363,19 @@ namespace Blog.Core.Test
         }
 
         [Fact]
-        public void WriteDatabase_ListOfEntityIsValidAndDatabaseIsEmpty_VerifyReader()
+        public void WriteToDatabase_ListOfEntityIsValidAndDatabaseIsEmpty_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+        }
+
+        [Fact]
+        public void WriteToDatabase_ListOfEntityIsValidAndDatabaseIsEmpty_VerifyReader()
         {
             var mockReader = new MockIFileReader();
             var stubWriter = new StubIFileWriter();
@@ -262,7 +389,7 @@ namespace Blog.Core.Test
         }
 
         [Fact]
-        public void WriteDatabase_ListOfEntityIsValidAndDatabaseIsEmpty_VerifyWriter()
+        public void WriteToDatabase_ListOfEntityIsValidAndDatabaseIsEmpty_VerifyWriter()
         {
             var stubReader = new StubIFileReader();
             var mockWriter = new MockIFileWriter();
@@ -276,7 +403,20 @@ namespace Blog.Core.Test
         }
 
         [Fact]
-        public void WriteDatabase_ListOfEntityIsValidAndDatabaseContainsOneObject_VerifyReader()
+        public void WriteToDatabase_ListOfEntityIsValidAndDatabaseContainsOneObject_Returns()
+        {
+            var stubReader = new StubIFileReader();
+            var stubWriter = new StubIFileWriter();
+            var fileDataAccess = new FileDataAccess<FakeBlogModel>(stubReader, stubWriter);
+            var param_filePath = "path/to/the/file.json";
+            var param_listOfEntity = new List<FakeBlogModel> { new FakeBlogModel() };
+            stubReader.StubRead(JsonConvert.SerializeObject(param_listOfEntity));
+
+            fileDataAccess.WriteToDatabase(param_filePath, param_listOfEntity);
+        }
+
+        [Fact]
+        public void WriteToDatabase_ListOfEntityIsValidAndDatabaseContainsOneObject_VerifyReader()
         {
             var mockReader = new MockIFileReader();
             var stubWriter = new StubIFileWriter();
@@ -291,7 +431,7 @@ namespace Blog.Core.Test
         }
 
         [Fact]
-        public void WriteDatabase_ListOfEntityIsValidAndDatabaseContainsOneObject_VerifyWriter()
+        public void WriteToDatabase_ListOfEntityIsValidAndDatabaseContainsOneObject_VerifyWriter()
         {
             var stubReader = new StubIFileReader();
             var mockWriter = new MockIFileWriter();

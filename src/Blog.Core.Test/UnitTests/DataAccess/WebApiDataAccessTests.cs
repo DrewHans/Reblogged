@@ -54,14 +54,29 @@ namespace Blog.Core.Test
             var param_request = new HttpRequestMessageFactory().StubHttpRequestMessage().Create();
             var stub_response = new HttpResponseMessageFactory().StubHttpResponseMessage().Create();
             var stub_task = Task.FromResult(stub_response);
+            var stubHandler = new Mock<IFakeHttpMessageHandler>();
+            stubHandler.Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .Returns(stub_task);
+            var webApiDataAccess = new WebApiDataAccess(new FakeHttpMessageHandler(stubHandler.Object));
+
+            var returned = webApiDataAccess.SendRequest(param_request);
+
+            Assert.Equal(returned, stub_response);
+        }
+
+        [Fact]
+        public void SendAsync_ValidRequest_VerifyHandler()
+        {
+            var param_request = new HttpRequestMessageFactory().StubHttpRequestMessage().Create();
+            var stub_response = new HttpResponseMessageFactory().StubHttpResponseMessage().Create();
+            var stub_task = Task.FromResult(stub_response);
             var mockHandler = new Mock<IFakeHttpMessageHandler>();
             mockHandler.Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Returns(stub_task);
             var webApiDataAccess = new WebApiDataAccess(new FakeHttpMessageHandler(mockHandler.Object));
 
-            var returned = webApiDataAccess.SendRequest(param_request);
+            webApiDataAccess.SendRequest(param_request);
 
-            Assert.Equal(returned, stub_response);
             mockHandler.Verify(x => x.SendAsync(param_request, It.IsAny<CancellationToken>()));
         }
     }
