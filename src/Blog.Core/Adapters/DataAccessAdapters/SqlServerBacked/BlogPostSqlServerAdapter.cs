@@ -70,7 +70,7 @@ namespace Blog.Core
             var sqlConnectionString = _configuration[KeyChain.SqlServerDataAccess_ConnectionString];
             var storedProcedure = _configuration[KeyChain.SqlServerDataAccess_StoredProcedure_BlogPost_GetById];
             var listOfSqlParameters = new List<SqlParameter>();
-            listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("AuthorId", id));
+            listOfSqlParameters.Add(_sqlParameterBuilder.BuildSqlParameter<BlogPost>("PostId", id));
             var listReturned = _sqlServerDataAccess.ExecuteReaderStoredProcedure<BlogPost>(sqlConnectionString, storedProcedure, listOfSqlParameters);
             if (listReturned.Count != 1)
                 return null;
