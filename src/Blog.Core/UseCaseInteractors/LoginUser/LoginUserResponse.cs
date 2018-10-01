@@ -2,6 +2,7 @@ namespace Blog.Core
 {
     public class LoginUserResponse
     {
-        public bool LoginSuccessful = false;
+        public BlogUser User;
+        public bool SystemLoginSuccessful = false;
     }
 }

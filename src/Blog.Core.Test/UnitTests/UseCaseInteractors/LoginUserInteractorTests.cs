@@ -14,12 +14,13 @@ namespace Blog.Core.Test
             var stub_blogUser = new BlogUserFactory().Create();
             var stub_list = new List<BlogUser> { stub_blogUser };
             stubBlogUserRepo.StubList(stub_list);
-            var expected = new LoginUserResponse { LoginSuccessful = true };
-            var param_request = new LoginUserRequest { UserName = stub_blogUser.UserName };
+            var expected = MakeResponse(stub_blogUser, true);
+            var param_request = MakeRequest(stub_blogUser.UserName);
 
             var actual = interactor.LoginUser(param_request);
 
-            Assert.Equal(expected.LoginSuccessful, actual.LoginSuccessful);
+            Assert.Equal(expected.SystemLoginSuccessful, actual.SystemLoginSuccessful);
+            Assert.Equal(expected.User, actual.User);
         }
 
         [Fact]
@@ -28,12 +29,12 @@ namespace Blog.Core.Test
             var stubBlogUserRepo = new StubIBlogUserRepository();
             var interactor = new LoginUserInteractor(stubBlogUserRepo);
             stubBlogUserRepo.StubList(new List<BlogUser>());
-            var expected = new LoginUserResponse { LoginSuccessful = false };
-            var param_request = new LoginUserRequest { UserName = "Poptart" };
+            var expected = MakeResponse(null, false);
+            var param_request = MakeRequest("Poptart");
 
             var actual = interactor.LoginUser(param_request);
 
-            Assert.Equal(expected.LoginSuccessful, actual.LoginSuccessful);
+            Assert.Equal(expected.SystemLoginSuccessful, actual.SystemLoginSuccessful);
         }
 
         [Fact]
@@ -41,12 +42,29 @@ namespace Blog.Core.Test
         {
             var mockBlogUserRepo = new MockIBlogUserRepository();
             var interactor = new LoginUserInteractor(mockBlogUserRepo);
-            var param_request = new LoginUserRequest { UserName = "Poptart" };
+            var param_request = MakeRequest("Poptart");
             mockBlogUserRepo.StubList(new List<BlogUser>());
 
             interactor.LoginUser(param_request);
 
             mockBlogUserRepo.VerifyList();
+        }
+
+        private LoginUserRequest MakeRequest(string username)
+        {
+            return new LoginUserRequest
+            {
+                UserName = username
+            };
+        }
+
+        private LoginUserResponse MakeResponse(BlogUser blogUser, bool loginSuccessful)
+        {
+            return new LoginUserResponse
+            {
+                User = blogUser,
+                SystemLoginSuccessful = loginSuccessful
+            };
         }
     }
 }

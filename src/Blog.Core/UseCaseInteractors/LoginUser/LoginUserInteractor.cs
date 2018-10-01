@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Blog.Core
@@ -16,23 +15,25 @@ namespace Blog.Core
         public LoginUserResponse LoginUser(LoginUserRequest request)
         {
             var response = new LoginUserResponse();
-            if (UserNameExists(request.UserName))
-                response.LoginSuccessful = true;
+            var bloguser = GetUserByUserName(request.UserName);
+            if (UserExists(bloguser))
+            {
+                response.User = bloguser;
+                response.SystemLoginSuccessful = true;
+            }
             return response;
         }
 
-        private BlogUser GetUserByUserName(List<BlogUser> listOfBlogUsers, string username)
+        private BlogUser GetUserByUserName(string username)
         {
-            return listOfBlogUsers.FirstOrDefault(blogUser =>
+            return _blogUserRepo.List().FirstOrDefault(blogUser =>
                 String.Equals(blogUser.UserName, username,
                     StringComparison.OrdinalIgnoreCase));
         }
 
-        private bool UserNameExists(string username)
+        private bool UserExists(BlogUser bloguser)
         {
-            var listOfUsers = _blogUserRepo.List();
-            var user = GetUserByUserName(listOfUsers, username);
-            return user != null;
+            return bloguser != null;
         }
     }
 }
