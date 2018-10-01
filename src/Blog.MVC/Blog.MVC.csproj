@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>ddfd935e-c56a-4b2c-b9ec-430515d86ffb</UserSecretsId>
+    <!-- On Linux, usersecrets are found in ~/.microsoft/usersecrets/ -->
   </PropertyGroup>
 
   <ItemGroup>

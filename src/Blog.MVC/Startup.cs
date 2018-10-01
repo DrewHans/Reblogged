@@ -29,10 +29,6 @@ namespace Blog.MVC
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            Blog.MVC.Setup.BlogCoreSetup.AddBlogCoreSingletons(services);
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -50,6 +46,10 @@ namespace Blog.MVC
                     policy.RequireRole(Blog.Core.KeyChain.BlogUser_Permission_Admin);
                 });
             });
+
+            Blog.MVC.Setup.BlogCoreSetup.AddBlogCoreSingletons(services);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime.
