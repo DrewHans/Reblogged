@@ -1,8 +1,8 @@
-@model LoginViewModel
+@model RegisterViewModel
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Register";
 }
-@using (Html.BeginForm("Login", "Login", FormMethod.Post, new { @class= "form-horizontal", id="login-form" }))
+@using (Html.BeginForm("Register", "Register", FormMethod.Post, new { @class= "form-horizontal", id="register-form" }))
 {
 <div class="container-fluid">
     <h2>Login Page</h2>
@@ -19,14 +19,9 @@
             </div>
             <div class="row">
                 <div class="">
-                    <button id="btn-Login" class="btn btn-primary" type="submit">
-                        <span class="glyphicon glyphicon-log-in"></span> Login
+                    <button id="btn-Register" class="btn btn-primary" type="submit">
+                        <span class="glyphicon glyphicon-user"></span> Register New User
                     </button>
-                </div>
-                <div class="">
-                    <a id="btn-Register" class="btn btn-success" href="../Register/Index" role="button">
-                        <span class="glyphicon glyphicon-user"></span> Register
-                    </a>
                 </div>
             </div>
         </div>

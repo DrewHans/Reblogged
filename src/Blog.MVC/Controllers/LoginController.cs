@@ -40,7 +40,7 @@ namespace Blog.MVC.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         public IActionResult Logout()
         {
             PerformClientSignOut();

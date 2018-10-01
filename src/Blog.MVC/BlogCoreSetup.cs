@@ -12,6 +12,7 @@ namespace Blog.MVC.Setup
             AddSingleton_FileDataAccessAdapters(services);
             AddSingleton_Repositories(services);
             AddSingleton_Validators(services);
+            AddSingleton_UseCaseInteractors(services);
         }
 
         private static void AddSingleton_Builders(IServiceCollection services)
@@ -47,6 +48,12 @@ namespace Blog.MVC.Setup
         {
             services.AddSingleton<IBlogPostDataAccessAdapter, BlogPostSqlServerAdapter>();
             services.AddSingleton<IBlogUserDataAccessAdapter, BlogUserSqlServerAdapter>();
+        }
+
+        private static void AddSingleton_UseCaseInteractors(IServiceCollection services)
+        {
+            services.AddSingleton<ILoginUserInteractor, LoginUserInteractor>();
+            services.AddSingleton<IRegisterUserInteractor, RegisterUserInteractor>();
         }
 
         private static void AddSingleton_Validators(IServiceCollection services)

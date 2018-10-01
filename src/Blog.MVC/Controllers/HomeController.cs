@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Blog.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Blog.MVC.Models;
+using System.Diagnostics;
 
 namespace Blog.MVC.Controllers
 {
+    [Authorize(Policy = "RequireAdminRole")]
     public class HomeController : Controller
     {
         public IActionResult Index()
