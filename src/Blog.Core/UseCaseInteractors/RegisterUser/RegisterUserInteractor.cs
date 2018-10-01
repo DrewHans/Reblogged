@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Blog.Core
@@ -15,11 +16,7 @@ namespace Blog.Core
         public RegisterUserResponse RegisterUser(RegisterUserRequest request)
         {
             var response = new RegisterUserResponse();
-            var listOfUsers = _blogUserRepo.List();
-            var user = listOfUsers.FirstOrDefault(blogUser =>
-                String.Equals(blogUser.UserName, request.UserName,
-                    StringComparison.OrdinalIgnoreCase));
-            if (user == null)
+            if (UserNameIsAvailable(request.UserName))
             {
                 AddNewBlogUser(request.UserName);
                 response.RegisterSuccessful = true;
@@ -35,6 +32,20 @@ namespace Blog.Core
             newUser.UserId = Guid.NewGuid();
             newUser.UserName = username;
             _blogUserRepo.Add(newUser);
+        }
+
+        private BlogUser GetUserByUserName(List<BlogUser> listOfBlogUsers, string username)
+        {
+            return listOfBlogUsers.FirstOrDefault(blogUser =>
+                String.Equals(blogUser.UserName, username,
+                    StringComparison.OrdinalIgnoreCase));
+        }
+
+        private bool UserNameIsAvailable(string username)
+        {
+            var listOfUsers = _blogUserRepo.List();
+            var user = GetUserByUserName(listOfUsers, username);
+            return user == null;
         }
     }
 }
