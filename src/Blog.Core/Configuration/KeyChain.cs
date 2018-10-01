@@ -2,8 +2,12 @@ namespace Blog.Core
 {
     public static class KeyChain
     {
-        // This KeyChain class is exists to centralize
+        // This KeyChain class exists to centralize
         //  "magic strings" used throughout Blog.Core.
+
+        public const string BlogUser_Permission_Admin
+            = "Admin";
+
         public const string FileDataAccess_BlogPost_DatabasePath
             = "fileDataAccess_blogpost_path";
         public const string FileDataAccess_BlogUser_DatabasePath
