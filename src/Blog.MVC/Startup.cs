@@ -12,15 +12,30 @@ namespace Blog.MVC
     {
         public IConfiguration Configuration { get; }
 
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json",
+                             optional: false,
+                             reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            builder.AddUserSecrets<Startup>();
+
+            Configuration = builder.Build();
+        }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime.
-        // Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // This method gets called by the runtime.
+            // Use this method to add services to the container.
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for 
@@ -52,10 +67,11 @@ namespace Blog.MVC
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
-        // This method gets called by the runtime.
-        // Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // This method gets called by the runtime.
+            // Use this method to configure the HTTP request pipeline.
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
