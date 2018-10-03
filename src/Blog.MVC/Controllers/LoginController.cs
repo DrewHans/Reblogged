@@ -17,6 +17,7 @@ namespace Blog.MVC.Controllers
             _loginUserInteractor = loginUserInteractor;
         }
 
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult Index()
         {
@@ -28,7 +29,7 @@ namespace Blog.MVC.Controllers
         public IActionResult Login(LoginViewModel viewmodel)
         {
             if (ModelState.IsValid == false)
-                return View();
+                return RedirectToAction("Index", "Login");
             var request = new LoginUserRequest { UserName = viewmodel.UserName };
             var response = _loginUserInteractor.LoginUser(request);
             if (response.SystemLoginSuccessful)
@@ -36,7 +37,7 @@ namespace Blog.MVC.Controllers
                 PerformClientSignIn(response.User);
                 return RedirectToAction("Index", "Home");
             }
-            return View();
+            return RedirectToAction("Index", "Login");
         }
 
         [HttpPost]

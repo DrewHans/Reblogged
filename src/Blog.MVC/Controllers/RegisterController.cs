@@ -13,6 +13,7 @@ namespace Blog.MVC.Controllers
             _registerUserInteractor = registerUserInteractor;
         }
 
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult Index()
         {
@@ -24,12 +25,12 @@ namespace Blog.MVC.Controllers
         public IActionResult Register(RegisterViewModel viewmodel)
         {
             if (ModelState.IsValid == false)
-                return View();
+                return RedirectToAction("Index", "Register");
             var request = new RegisterUserRequest { UserName = viewmodel.UserName };
             var response = _registerUserInteractor.RegisterUser(request);
             if (response.RegisterSuccessful)
                 return RedirectToAction("Index", "Login");
-            return View();
+            return RedirectToAction("Index", "Register");
         }
     }
 }
