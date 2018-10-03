@@ -40,7 +40,7 @@ namespace Blog.MVC
             {
                 // This lambda determines whether user consent for 
                 // non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -62,6 +62,7 @@ namespace Blog.MVC
                 });
             });
 
+            services.AddSingleton<IConfiguration>(this.Configuration);
             Blog.MVC.Setup.BlogCoreSetup.AddBlogCoreSingletons(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
