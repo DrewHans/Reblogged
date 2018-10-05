@@ -1,5 +1,5 @@
 # Reblogged
-Reblogged is a C# / ASP.NET Core 2.1 blogging application that I made in my free time to improve my full-stack web development skills.
+Reblogged is a C# / ASP.NET Core 2.1 MVC blogging application that I made in my free time to improve both my full-stack web development skills and my unit testing skills.
 
 ## License
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details
