@@ -1,0 +1,30 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+@using (Html.BeginForm("Register", "Register", FormMethod.Post, new { @class= "form-horizontal", id="register-form" }))
+{
+<div class="container-fluid">
+    <h2>Login Page</h2>
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <label for="username" class="control-label">Username:</label>
+                @Html.TextBoxFor(model => model.UserName, new { @class="form-control", id="username" })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+            <div class="row">
+                <label for="password" class="control-label">Password:</label>
+                <input id="password" class="form-control" type="text" placeholder="Passwords are not supported at this time..." disabled>
+            </div>
+            <div class="row">
+                <div class="">
+                    <button id="btn-Register" class="btn btn-primary" type="submit">
+                        <span class="glyphicon glyphicon-user"></span> Register New User
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
