@@ -68,3 +68,14 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
     │
     ├─ LICENSE
     └─ README.md
+
+### Getting Setup
+1. Clone the Reblogged repository.
+2. Open Visual Studio Code & press the 'Open Folder' button. Select the Reblogged folder.
+3. Some popups will appear in Visual Studio Code. Select 'Yes' or 'Restore' for all popups to setup your local environment. This should only take a minute.
+
+### Running the MVC Web App
+1. Make sure you have followed the steps listed above in 'Getting Setup'.
+2. Open the terminal in Visual Studio Code & type 'cd ./src/Blog.MVC/' and press enter.
+3. Now, still in the terminal, type 'dotnet run' & press enter.
+4. Open your web browser & go to 'http://localhost:5000/'
