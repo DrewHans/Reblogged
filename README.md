@@ -80,7 +80,7 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 1. Using Visual Studio Code's explorer, expand src/Blog.Secrets.
 2. Right click on the UserSecrets folder and click 'Reveal in Explorer'.
 3. Copy the folder contents of UserSecrets to the appropriate directory below:
-* On Windows: 'C:\Users\<your_username>\AppData\Local\Microsoft\UserSecrets\'
+* On Windows: 'C:\Users\<your_username>\AppData\Roaming\Microsoft\UserSecrets\'
 * On Linux: '~/.microsoft/usersecrets/'
 4. Go inside the folder you just copied and open the secrets.json file.
 5. Update the paths in secrets.json. These paths can look different depending on your operating system & file structure.
