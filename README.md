@@ -54,7 +54,7 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
     │  │  ├─ Models/             # MVC models
     │  │  ├─ Presenters/         # Used to simplify passing data from controllers to views
     │  │  ├─ Views/              # MVC views
-    │  │  ├─ wwwroot/            # Web assests (css, js, images, libs) live here
+    │  │  ├─ wwwroot/            # Static web assests (css, js, images, libs) live here
     │  │  │
     │  │  ├─ Blog.MVC.csproj
     │  │  ├─ BlogCoreSetup.cs    # Simple class to handle initializing Blog.Core classes
@@ -85,11 +85,11 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 4. Go inside the folder you just copied and open the secrets.json file.
 5. Update the paths in secrets.json. These paths can look different depending on your operating system & file structure.
 * On Linux it may look like:
-* * '~/Desktop/Reblogged/src/Blog.Database/FileDB/blogposts.json'
-* * '~/Desktop/Reblogged/src/Blog.Database/FileDB/blogusers.json'
+  * '~/Desktop/Reblogged/src/Blog.Database/FileDB/blogposts.json'
+  * '~/Desktop/Reblogged/src/Blog.Database/FileDB/blogusers.json'
 * On Windows it may look like:
-* * 'C:\\Users\\<your_username>\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogposts.json'
-* * 'C:\\Users\\<your_username>\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogusers.json'
+  * 'C:\\Users\\<your_username>\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogposts.json'
+  * 'C:\\Users\\<your_username>\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogusers.json'
 
 Note: Adding UserSecrets to public version control is a very bad idea. It is only done here to simplify setting up this project for demos. Never do this in a real production system!
 
