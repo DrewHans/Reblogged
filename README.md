@@ -76,6 +76,12 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 2. Open Visual Studio Code & press the 'Open Folder' button. Select the Reblogged folder.
 3. Some popups will appear in Visual Studio Code. Select 'Yes' or 'Restore' for all popups to setup your local environment. This should only take a minute.
 
+### Running the MVC Web App
+1. Make sure you have followed the steps listed above in 'Getting Setup'.
+2. Open the terminal in Visual Studio Code & type 'cd ./src/Blog.MVC/' and press enter.
+3. Now, still in the terminal, type 'dotnet run' & press enter.
+4. Open your web browser & go to 'http://localhost:5000/'
+
 ### Setting Up UserSecrets
 1. Using Visual Studio Code's explorer, expand src/Blog.Secrets.
 2. Right click on the UserSecrets folder and click 'Reveal in Explorer'.
@@ -88,13 +94,13 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
   * '~/Desktop/Reblogged/src/Blog.Database/FileDB/blogposts.json'
   * '~/Desktop/Reblogged/src/Blog.Database/FileDB/blogusers.json'
 * On Windows it may look like:
-  * 'C:\\Users\\<your_username>\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogposts.json'
-  * 'C:\\Users\\<your_username>\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogusers.json'
+  * 'C:\\Users\\your_username\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogposts.json'
+  * 'C:\\Users\\your_username\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogusers.json'
+  6. Remove the two filedataaccess entries in 'Reblogged/src/Blog.MVC/appsettings.json'.
+  7. Go to 'Reblogged/src/Blog.MVC/Startup.cs' and uncomment line 24.
+  8. Go to Blog.MVC.csproj and uncomment the '<UserSecretsId>' entry on line 5.
+  9. Repeat step 8 for the Blog.MVC.Test.csproj file in 'Reblogged/src/Blog.MVC.Test/'.
+  10. Make sure you have followed the steps listed above in 'Running the MVC Web App'.
+  11. Confirm that new users can register & login (this means the MVC app is able to access the configuration key/values in UserSecrets).
 
-Note: Adding UserSecrets to public version control is a very bad idea. It is only done here to simplify setting up this project for demos. Never do this in a real production system!
-
-### Running the MVC Web App
-1. Make sure you have followed the steps listed above in 'Getting Setup' & 'Setting Up UserSecrets'.
-2. Open the terminal in Visual Studio Code & type 'cd ./src/Blog.MVC/' and press enter.
-3. Now, still in the terminal, type 'dotnet run' & press enter.
-4. Open your web browser & go to 'http://localhost:5000/'
+Note: Adding UserSecrets to public version control is a very bad idea. It is only done here to simplify setting up this project for demos. Never do this in a real production system! Protect sensitive information!
