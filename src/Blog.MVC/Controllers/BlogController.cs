@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Blog.MVC.Controllers
 {
@@ -11,10 +12,13 @@ namespace Blog.MVC.Controllers
     [Route("blog")]
     public class BlogController : Controller
     {
+        private readonly IAddBlogPostInteractor _addBlogPostInteractor;
         private readonly IListRecentBlogPostsInteractor _listRecentBlogPostsInteractor;
 
-        public BlogController(IListRecentBlogPostsInteractor listRecentBlogPostsInteractor)
+        public BlogController(IAddBlogPostInteractor AddBlogPostInteractor,
+            IListRecentBlogPostsInteractor listRecentBlogPostsInteractor)
         {
+            _addBlogPostInteractor = AddBlogPostInteractor;
             _listRecentBlogPostsInteractor = listRecentBlogPostsInteractor;
         }
 
@@ -43,8 +47,8 @@ namespace Blog.MVC.Controllers
             return View();
         }
 
-        [HttpGet("posts/{post_id}")] // displays page for a specific post
-        public IActionResult GetPost(Guid post_id)
+        [HttpGet("posts?postid={post_id}")] // displays page for a specific post
+        public IActionResult GetPost(Guid postid)
         {
             return View();
         }
@@ -68,9 +72,22 @@ namespace Blog.MVC.Controllers
         }
 
         [HttpPost("posts")] // creates a new post or redirects to AddPost page
-        public IActionResult CreatePost(Guid author_id, string post_title, string post_body)
+        public IActionResult CreatePost(BlogPostDTOModel dto)
         {
-            return View();
+            if (ModelState.IsValid == false)
+                return RedirectToAction("AddPost", "Blog", dto);
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "BlogUserId").Value;
+            var request = new AddBlogPostRequest
+            {
+                AuthorId = Guid.Parse(userId),
+                PostBody = dto.PostBody,
+                PostTitle = dto.PostTitle
+            };
+            var response = _addBlogPostInteractor.AddBlogPost(request);
+            if (response.AddSuccessful)
+                return RedirectToAction("GetPost", "Blog", new { post_id=response.Post.PostId });
+            return RedirectToAction("AddPost", "Blog");
         }
 
         [HttpDelete("posts/{post_id}")] // removes a specific post or redirects to EditPost page

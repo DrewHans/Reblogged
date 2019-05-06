@@ -31,7 +31,7 @@ namespace Blog.Core
         private BlogPost CreateNewPost(AddBlogPostRequest request)
         {
             var newPost = new BlogPost();
-            newPost.AuthorId = Guid.Parse(request.AuthorId);
+            newPost.AuthorId = request.AuthorId;
             newPost.PostBody = request.PostBody;
             newPost.PostId = Guid.NewGuid();
             newPost.PostTitle = request.PostTitle;

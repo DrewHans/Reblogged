@@ -4,7 +4,10 @@
 }
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
-
+<p>
+    <a asp-area="" asp-controller="Blog" asp-action="AddPost">Add New Post</a>
+    <a asp-area="" asp-controller="Blog" asp-action="ListPosts">View All Posts</a>
+</p>
 @if(Model.RecentPosts.Count ==0)
 {
     <p>There are no recent posts available. You should make one! :)</p>
@@ -15,13 +18,7 @@ else
     @foreach(BlogPostDTOModel post in Model.RecentPosts)
     {
         <div class="row">
-            @Html.ActionLink(
-                "@post.PostTitle", 
-                "GetPost", 
-                "BlogController", 
-                new { myParams = post.PostId }, 
-                null
-            )
+            <a asp-controller="Blog" asp-action="posts" asp-route-postid="@post.PostId">@post.PostTitle</a>
         </div>
     }
 }
