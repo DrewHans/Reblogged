@@ -52,6 +52,10 @@ namespace Blog.MVC.Setup
 
         private static void AddSingleton_UseCaseInteractors(IServiceCollection services)
         {
+            services.AddSingleton<IAddBlogPostInteractor, AddBlogPostInteractor>();
+            services.AddSingleton<IDeleteBlogPostInteractor, DeleteBlogPostInteractor>();
+            services.AddSingleton<IEditBlogPostInteractor, EditBlogPostInteractor>();
+            services.AddSingleton<IListRecentBlogPostsInteractor, ListRecentBlogPostsInteractor>();
             services.AddSingleton<ILoginUserInteractor, LoginUserInteractor>();
             services.AddSingleton<IRegisterUserInteractor, RegisterUserInteractor>();
         }

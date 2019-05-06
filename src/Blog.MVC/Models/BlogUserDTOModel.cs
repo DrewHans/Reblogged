@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Blog.MVC
 {
-    public class BlogUserViewModel
+    public class BlogUserDTOModel
     {
         public List<string> Permissions { get; set; } = new List<string>();
 
