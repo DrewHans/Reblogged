@@ -53,10 +53,18 @@ namespace Blog.MVC.Controllers
             return View();
         }
 
-        [HttpGet("posts/edit")] // displays page for editing an existing post
-        public IActionResult EditPost()
+        [HttpGet("posts/edit/{id}")] // displays page for editing an existing post
+        public IActionResult EditPost(string id)
         {
-            return View();
+            var postid = Guid.Parse(id);
+            var request = new GetBlogPostRequest { PostId = postid };
+            var response = _getBlogPostInteractor.GetBlogPost(request);
+            var dto = new BlogPostDTOModel();
+            if (response.RequestSuccessful)
+            {
+                dto = MapBlogPostToDTOModel(response.Post);
+            }
+            return View(dto);
         }
 
         [HttpGet("posts/{id}")] // displays page for a specific post
@@ -108,11 +116,11 @@ namespace Blog.MVC.Controllers
             return View(viewmodel);
         }
 
-        [HttpPost("posts")] // creates a new post or redirects to AddPost page
+        [HttpPost("posts/create")] // creates a new post or redirects to AddPost page
         public IActionResult CreatePost(BlogPostDTOModel dto)
         {
             if (ModelState.IsValid == false)
-                return RedirectToAction("AddPost", "Blog", dto);
+                return RedirectToAction("AddPost", "Blog");
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == "BlogUserId").Value;
             var request = new AddBlogPostRequest
@@ -123,18 +131,24 @@ namespace Blog.MVC.Controllers
             };
             var response = _addBlogPostInteractor.AddBlogPost(request);
             if (response.AddSuccessful)
-                return RedirectToAction("GetPost", "Blog", new { post_id = response.Post.PostId });
+                return RedirectToAction("GetPost", "Blog", new { id = response.Post.PostId });
             return RedirectToAction("AddPost", "Blog", dto);
         }
 
-        [HttpDelete("posts/{post_id}")] // removes a specific post or redirects to EditPost page
-        public IActionResult RemovePost(Guid post_id)
+        [HttpDelete("posts/delete")] // removes a specific post or redirects to EditPost page
+        public IActionResult RemovePost(BlogPostDTOModel dto)
         {
-            return View();
+            var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == "BlogUserId").Value);
+            if (userId == dto.AuthorId)
+            {
+                // TODO: remove post
+            }
+            return RedirectToAction("Index", "Blog");
+
         }
 
-        [HttpPatch("posts/{post_id}")] // partially updates a specific post or redirects to EditPost page
-        public IActionResult UpdatePost(Guid post_id, BlogPostDTOModel dto)
+        [HttpPost("posts/update")] // partially updates a specific post or redirects to EditPost page
+        public IActionResult UpdatePost(BlogPostDTOModel dto)
         {
             var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == "BlogUserId").Value);
             if (ModelState.IsValid == false || userId != dto.AuthorId)
@@ -148,7 +162,7 @@ namespace Blog.MVC.Controllers
             };
             var response = _editBlogPostInteractor.EditBlogPost(request);
             if (response.EditSuccessful)
-                return RedirectToAction("GetPost", "Blog", new { post_id = response.Post.PostId });
+                return RedirectToAction("GetPost", "Blog", new { id = response.Post.PostId });
             return RedirectToAction("EditPost", "Blog", dto);
         }
 

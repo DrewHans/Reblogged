@@ -5,7 +5,8 @@
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 <p>
-    <a asp-area="" asp-controller="Blog" asp-action="EditPost">Edit Post</a>
+    <a asp-area="" asp-controller="Blog" asp-action="Index">Blog Home</a> | 
+    @Html.ActionLink("Edit Post", "EditPost", "Blog", new {id = @Model.Post.PostId}, null)
 </p>
 @if(Model == null)
 {
