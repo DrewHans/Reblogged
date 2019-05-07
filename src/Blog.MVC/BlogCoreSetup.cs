@@ -55,6 +55,9 @@ namespace Blog.MVC.Setup
             services.AddSingleton<IAddBlogPostInteractor, AddBlogPostInteractor>();
             services.AddSingleton<IDeleteBlogPostInteractor, DeleteBlogPostInteractor>();
             services.AddSingleton<IEditBlogPostInteractor, EditBlogPostInteractor>();
+            services.AddSingleton<IGetBlogPostInteractor, GetBlogPostInteractor>();
+            services.AddSingleton<IListBlogPostsInteractor, ListBlogPostsInteractor>();
+            services.AddSingleton<IListBlogUsersInteractor, ListBlogUsersInteractor>();
             services.AddSingleton<IListRecentBlogPostsInteractor, ListRecentBlogPostsInteractor>();
             services.AddSingleton<ILoginUserInteractor, LoginUserInteractor>();
             services.AddSingleton<IRegisterUserInteractor, RegisterUserInteractor>();

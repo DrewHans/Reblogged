@@ -4,7 +4,8 @@
 }
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
-
+<p><a asp-area="" asp-controller="Blog" asp-action="Index">Blog Home</a></p>
+<br>
 @using (Html.BeginForm("CreatePost", "Blog", FormMethod.Post, new { @class= "form-horizontal", id="create-blog-post-form" }))
 {
 

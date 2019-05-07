@@ -13,12 +13,24 @@ namespace Blog.MVC.Controllers
     public class BlogController : Controller
     {
         private readonly IAddBlogPostInteractor _addBlogPostInteractor;
+        private readonly IEditBlogPostInteractor _editBlogPostInteractor;
+        private readonly IGetBlogPostInteractor _getBlogPostInteractor;
+        private readonly IListBlogPostsInteractor _listBlogPostsInteractor;
+        private readonly IListBlogUsersInteractor _listBlogUsersInteractor;
         private readonly IListRecentBlogPostsInteractor _listRecentBlogPostsInteractor;
 
-        public BlogController(IAddBlogPostInteractor AddBlogPostInteractor,
+        public BlogController(IAddBlogPostInteractor addBlogPostInteractor,
+            IEditBlogPostInteractor editBlogPostInteractor,
+            IGetBlogPostInteractor getBlogPostInteractor,
+            IListBlogPostsInteractor listBlogPostsInteractor,
+            IListBlogUsersInteractor listBlogUsersInteractor,
             IListRecentBlogPostsInteractor listRecentBlogPostsInteractor)
         {
-            _addBlogPostInteractor = AddBlogPostInteractor;
+            _addBlogPostInteractor = addBlogPostInteractor;
+            _editBlogPostInteractor = editBlogPostInteractor;
+            _getBlogPostInteractor = getBlogPostInteractor;
+            _listBlogPostsInteractor = listBlogPostsInteractor;
+            _listBlogUsersInteractor = listBlogUsersInteractor;
             _listRecentBlogPostsInteractor = listRecentBlogPostsInteractor;
         }
 
@@ -47,28 +59,53 @@ namespace Blog.MVC.Controllers
             return View();
         }
 
-        [HttpGet("posts?postid={post_id}")] // displays page for a specific post
-        public IActionResult GetPost(Guid postid)
+        [HttpGet("posts/{id}")] // displays page for a specific post
+        public IActionResult GetPost(string id)
         {
-            return View();
+            var postid = Guid.Parse(id);
+            var request = new GetBlogPostRequest { PostId = postid };
+            var response = _getBlogPostInteractor.GetBlogPost(request);
+            var viewmodel = new BlogGetPostViewModel();
+            if (response.RequestSuccessful)
+            {
+                viewmodel.Post = MapBlogPostToDTOModel(response.Post);
+                viewmodel.User = MapBlogUserToDTOModel(response.User);
+            }
+            return View(viewmodel);
         }
 
-        [HttpGet("users/{user_id}")] // displays page for a specific user
-        public IActionResult GetUser(Guid user_id)
+        [HttpGet("users/{id}")] // displays page for a specific user
+        public IActionResult GetUser(string id)
         {
+            var userid = Guid.Parse(id);
+            //TODO: implement GetUser like GetPost method above
             return View();
         }
 
         [HttpGet("posts")] // displays page with a list of all posts
         public IActionResult ListPosts()
         {
-            return View();
+            var request = new ListBlogPostsRequest();
+            var response = _listBlogPostsInteractor.ListBlogPosts(request);
+            var viewmodel = new BlogListPostsViewModel();
+            if (response.RequestSuccessful)
+            {
+                viewmodel.ListOfPosts = MapListOfBlogPostToListOfDTOModel(response.ListOfPosts);
+            }
+            return View(viewmodel);
         }
 
         [HttpGet("users")] // displays page with a list of all users
         public IActionResult ListUsers()
         {
-            return View();
+            var request = new ListBlogUsersRequest();
+            var response = _listBlogUsersInteractor.ListBlogUsers(request);
+            var viewmodel = new BlogListUsersViewModel();
+            if (response.RequestSuccessful)
+            {
+                viewmodel.ListOfUsers = MapListOfBlogUserToListOfDTOModel(response.ListOfUsers);
+            }
+            return View(viewmodel);
         }
 
         [HttpPost("posts")] // creates a new post or redirects to AddPost page
@@ -86,8 +123,8 @@ namespace Blog.MVC.Controllers
             };
             var response = _addBlogPostInteractor.AddBlogPost(request);
             if (response.AddSuccessful)
-                return RedirectToAction("GetPost", "Blog", new { post_id=response.Post.PostId });
-            return RedirectToAction("AddPost", "Blog");
+                return RedirectToAction("GetPost", "Blog", new { post_id = response.Post.PostId });
+            return RedirectToAction("AddPost", "Blog", dto);
         }
 
         [HttpDelete("posts/{post_id}")] // removes a specific post or redirects to EditPost page
@@ -97,9 +134,22 @@ namespace Blog.MVC.Controllers
         }
 
         [HttpPatch("posts/{post_id}")] // partially updates a specific post or redirects to EditPost page
-        public IActionResult UpdatePost(Guid post_id, Guid author_id, string post_title, string post_body)
+        public IActionResult UpdatePost(Guid post_id, BlogPostDTOModel dto)
         {
-            return View();
+            var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == "BlogUserId").Value);
+            if (ModelState.IsValid == false || userId != dto.AuthorId)
+                return RedirectToAction("EditPost", "Blog", dto);
+
+            var request = new EditBlogPostRequest
+            {
+                PostBody = dto.PostBody,
+                PostId = dto.PostId,
+                PostTitle = dto.PostTitle
+            };
+            var response = _editBlogPostInteractor.EditBlogPost(request);
+            if (response.EditSuccessful)
+                return RedirectToAction("GetPost", "Blog", new { post_id = response.Post.PostId });
+            return RedirectToAction("EditPost", "Blog", dto);
         }
 
         private BlogPostDTOModel MapBlogPostToDTOModel(BlogPost post)
@@ -111,6 +161,16 @@ namespace Blog.MVC.Controllers
             dto.PostTitle = post.PostTitle;
             dto.TimeCreated = post.TimeCreated;
             dto.TimeLastModified = post.TimeLastModified;
+            return dto;
+        }
+
+        private BlogUserDTOModel MapBlogUserToDTOModel(BlogUser user)
+        {
+            var dto = new BlogUserDTOModel();
+            dto.Permissions = user.Permissions;
+            dto.TimeRegistered = user.TimeRegistered;
+            dto.UserId = user.UserId;
+            dto.UserName = user.UserName;
             return dto;
         }
 
@@ -126,6 +186,16 @@ namespace Blog.MVC.Controllers
             return post;
         }
 
+        private BlogUser MapDTOModelToBlogUser(BlogUserDTOModel dto)
+        {
+            var user = new BlogUser();
+            user.Permissions = dto.Permissions;
+            user.TimeRegistered = dto.TimeRegistered;
+            user.UserId = dto.UserId;
+            user.UserName = dto.UserName;
+            return user;
+        }
+
         private List<BlogPostDTOModel> MapListOfBlogPostToListOfDTOModel(List<BlogPost> list)
         {
             var newList = new List<BlogPostDTOModel>();
@@ -136,12 +206,32 @@ namespace Blog.MVC.Controllers
             return newList;
         }
 
+        private List<BlogUserDTOModel> MapListOfBlogUserToListOfDTOModel(List<BlogUser> list)
+        {
+            var newList = new List<BlogUserDTOModel>();
+            foreach (var item in list)
+            {
+                newList.Add(MapBlogUserToDTOModel(item));
+            }
+            return newList;
+        }
+
         private List<BlogPost> MapListOfDTOModelToListOfBlogPost(List<BlogPostDTOModel> list)
         {
             var newList = new List<BlogPost>();
             foreach (var item in list)
             {
                 newList.Add(MapDTOModelToBlogPost(item));
+            }
+            return newList;
+        }
+
+        private List<BlogUser> MapListOfDTOModelToListOfBlogUser(List<BlogUserDTOModel> list)
+        {
+            var newList = new List<BlogUser>();
+            foreach (var item in list)
+            {
+                newList.Add(MapDTOModelToBlogUser(item));
             }
             return newList;
         }

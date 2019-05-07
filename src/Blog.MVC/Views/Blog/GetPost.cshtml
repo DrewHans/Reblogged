@@ -1,0 +1,31 @@
+@model BlogGetPostViewModel
+@{
+    ViewData["Title"] = "Blog Post";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+<p>
+    <a asp-area="" asp-controller="Blog" asp-action="EditPost">Edit Post</a>
+</p>
+@if(Model == null)
+{
+    <p>Post information could not be retrieved. Are you sure it exists?</p>
+}
+else
+{
+    <div class="row">
+        <p>Title: @Model.Post.PostTitle</p>
+    </div>
+    <div class="row">
+        <p>Body: @Model.Post.PostBody</p>
+    </div>
+    <div class="row">
+        <p>Author: @Html.ActionLink(@Model.User.UserName, "GetUser", "Blog", new {id = @Model.User.UserId}, null)</p>
+    </div>
+    <div class="row">
+        <p>Creation Date: @Model.Post.TimeCreated</p>
+    </div>
+    <div class="row">
+        <p>Last Modified Date: @Model.Post.TimeLastModified</p>
+    </div>
+}

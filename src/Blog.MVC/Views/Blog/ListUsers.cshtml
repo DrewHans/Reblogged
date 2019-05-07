@@ -1,0 +1,24 @@
+@model BlogListUsersViewModel
+@{
+    ViewData["Title"] = "All Users";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+<p>
+    <a asp-area="" asp-controller="Blog" asp-action="Index">Blog Home</a> | 
+    <a asp-area="" asp-controller="Blog" asp-action="ListPosts">View All Posts</a>
+</p>
+@if(Model.ListOfUsers.Count ==0)
+{
+    <p>Uh oh, I couldn't retrieve any users. Is the server down? :(</p>
+}
+else
+{
+    <p>All Users:</p>
+    @foreach(BlogUserDTOModel user in Model.ListOfUsers)
+    {
+        <div class="row">
+            @Html.ActionLink(@user.UserName, "GetUser", "Blog", new {id = @user.UserId}, null)
+        </div>
+    }
+}

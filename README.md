@@ -66,7 +66,7 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
     │  │  │
     │  │  └─ Blog.MVC.Test.csproj
     │  │
-    │  └─ Blog.Secrets/          # UserSecrets for demoing MVC app with FileDataAccess
+    │  └─ Blog.Secrets/          # UserSecrets (see 'Setting Up UserSecrets' below)
     │
     ├─ LICENSE
     └─ README.md
@@ -82,7 +82,7 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 3. Now, still in the terminal, type 'dotnet run' & press enter.
 4. Open your web browser & go to 'http://localhost:5000/'
 
-### Setting Up UserSecrets
+### Setting Up UserSecrets (optional)
 1. Using Visual Studio Code's explorer, expand src/Blog.Secrets.
 2. Right click on the UserSecrets folder and click 'Reveal in Explorer'.
 3. Copy the folder contents of UserSecrets to the appropriate directory below:

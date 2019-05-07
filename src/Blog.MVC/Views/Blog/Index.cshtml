@@ -5,8 +5,9 @@
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 <p>
-    <a asp-area="" asp-controller="Blog" asp-action="AddPost">Add New Post</a>
-    <a asp-area="" asp-controller="Blog" asp-action="ListPosts">View All Posts</a>
+    <a asp-area="" asp-controller="Blog" asp-action="AddPost">Add New Post</a> | 
+    <a asp-area="" asp-controller="Blog" asp-action="ListPosts">View All Posts</a> | 
+    <a asp-area="" asp-controller="Blog" asp-action="ListUsers">View All Users</a>
 </p>
 @if(Model.RecentPosts.Count ==0)
 {
@@ -18,7 +19,7 @@ else
     @foreach(BlogPostDTOModel post in Model.RecentPosts)
     {
         <div class="row">
-            <a asp-controller="Blog" asp-action="posts" asp-route-postid="@post.PostId">@post.PostTitle</a>
+            @Html.ActionLink(@post.PostTitle, "GetPost", "Blog", new {id = @post.PostId}, null)
         </div>
     }
 }

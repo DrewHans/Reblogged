@@ -14,7 +14,7 @@ namespace Blog.Core
         public EditBlogPostResponse EditBlogPost(EditBlogPostRequest request)
         {
             var response = new EditBlogPostResponse();
-            var postId = Guid.Parse(request.PostId);
+            var postId = request.PostId;
             var oldPost = _blogPostRepo.GetById(postId);
             var updatedPost = UpdatePost(oldPost, request);
             response.Post = updatedPost;

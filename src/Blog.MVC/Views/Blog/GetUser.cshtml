@@ -1,0 +1,28 @@
+@model BlogGetUserViewModel
+@{
+    ViewData["Title"] = "Blog User";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+<p>
+    
+</p>
+@if(Model == null)
+{
+    <p>User information could not be retrieved. Are you sure they exist?</p>
+}
+else
+{
+    <div class="row">
+        <p>UserName: @Model.User.UserName</p>
+    </div>
+    <div class="row">
+        <p>Date Registered: @Model.User.TimeRegistered</p>
+    </div>
+    @foreach(BlogPostDTOModel post in Model.ListOfPosts)
+    {
+        <div class="row">
+            <p>Post: @Html.ActionLink(@post.PostTitle, "GetPost", "Blog", new {id = @post.PostId}, null)</p>
+        </div>
+    }
+}
