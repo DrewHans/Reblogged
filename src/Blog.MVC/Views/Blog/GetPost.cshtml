@@ -6,7 +6,8 @@
 <h3>@ViewData["Message"]</h3>
 <p>
     <a asp-area="" asp-controller="Blog" asp-action="Index">Blog Home</a> | 
-    @Html.ActionLink("Edit Post", "EditPost", "Blog", new {id = @Model.Post.PostId}, null)
+    @Html.ActionLink("Edit Post", "EditPost", "Blog", new {id = @Model.Post.PostId}, null) | 
+    <!-- TODO: Delete post modal link goes here -->
 </p>
 @if(Model == null)
 {
@@ -30,3 +31,10 @@ else
         <p>Last Modified Date: @Model.Post.TimeLastModified</p>
     </div>
 }
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#deletepostmodal">
+  Delete Post
+</button>
+
+@await Html.PartialAsync("~/Views/Blog/Partials/_DeletePostModal.cshtml", Model.Post)

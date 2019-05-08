@@ -13,6 +13,7 @@ namespace Blog.MVC.Controllers
     public class BlogController : Controller
     {
         private readonly IAddBlogPostInteractor _addBlogPostInteractor;
+        private readonly IDeleteBlogPostInteractor _deleteBlogPostInteractor;
         private readonly IEditBlogPostInteractor _editBlogPostInteractor;
         private readonly IGetBlogPostInteractor _getBlogPostInteractor;
         private readonly IListBlogPostsInteractor _listBlogPostsInteractor;
@@ -20,6 +21,7 @@ namespace Blog.MVC.Controllers
         private readonly IListRecentBlogPostsInteractor _listRecentBlogPostsInteractor;
 
         public BlogController(IAddBlogPostInteractor addBlogPostInteractor,
+            IDeleteBlogPostInteractor deleteBlogPostInteractor,
             IEditBlogPostInteractor editBlogPostInteractor,
             IGetBlogPostInteractor getBlogPostInteractor,
             IListBlogPostsInteractor listBlogPostsInteractor,
@@ -27,6 +29,7 @@ namespace Blog.MVC.Controllers
             IListRecentBlogPostsInteractor listRecentBlogPostsInteractor)
         {
             _addBlogPostInteractor = addBlogPostInteractor;
+            _deleteBlogPostInteractor = deleteBlogPostInteractor;
             _editBlogPostInteractor = editBlogPostInteractor;
             _getBlogPostInteractor = getBlogPostInteractor;
             _listBlogPostsInteractor = listBlogPostsInteractor;
@@ -135,16 +138,25 @@ namespace Blog.MVC.Controllers
             return RedirectToAction("AddPost", "Blog", dto);
         }
 
-        [HttpDelete("posts/delete")] // removes a specific post or redirects to EditPost page
+        [HttpPost("posts/delete")] // removes a specific post or redirects to EditPost page
         public IActionResult RemovePost(BlogPostDTOModel dto)
         {
             var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == "BlogUserId").Value);
-            if (userId == dto.AuthorId)
+            if (userId != dto.AuthorId)
             {
-                // TODO: remove post
+                ViewData["Message"] = "You are not the author of this post. You cannot delete it.";
+                return RedirectToAction("GetPost", "Blog", new { id = dto.PostId });
             }
-            return RedirectToAction("Index", "Blog");
+            var request = new DeleteBlogPostRequest { PostId = dto.PostId };
+            var response = _deleteBlogPostInteractor.DeleteBlogPost(request);
+            if (response.DeleteSuccessful)
+            {
+                ViewData["Message"] = "Your post was successfully deleted.";
+                return RedirectToAction("Index", "Blog");
+            }
 
+            ViewData["Message"] = "This post failed to delete. Is the server down? :(";
+            return RedirectToAction("GetPost", "Blog", new { id = dto.PostId });
         }
 
         [HttpPost("posts/update")] // partially updates a specific post or redirects to EditPost page

@@ -14,7 +14,7 @@ namespace Blog.Core
         public DeleteBlogPostResponse DeleteBlogPost(DeleteBlogPostRequest request)
         {
             var response = new DeleteBlogPostResponse();
-            var postId = Guid.Parse(request.PostId);
+            var postId = request.PostId;
             try
             {
                 var post = _blogPostRepo.GetById(postId);

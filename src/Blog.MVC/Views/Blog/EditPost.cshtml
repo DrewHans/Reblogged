@@ -13,22 +13,22 @@
     @Html.HiddenFor(model => model.AuthorId)
     @Html.HiddenFor(model => model.PostId)
 
-<div class="row">
-    <label for="posttitle" class="control-label">Post Title:</label>
-    @Html.TextBoxFor(model => model.PostTitle, new { @class="form-control", id="posttitle" })
-    @Html.ValidationMessageFor(model => model.PostTitle, "", new { @class = "text-danger" })
-</div>
-<div class="row">
-    <label for="postbody" class="control-label">Post Body:</label>
-    @Html.TextAreaFor(model => model.PostBody, new { @class="form-control", id="postbody" })
-    @Html.ValidationMessageFor(model => model.PostBody, "", new { @class = "text-danger" })
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-6">
-        <button id="btn-Update-Post" class="btn btn-primary" type="submit">
-            <span class="glyphicon glyphicon-user"></span> Submit
-        </button>
+    <div class="row">
+        <label for="posttitle" class="control-label">Post Title:</label>
+        @Html.TextBoxFor(model => model.PostTitle, new { @class="form-control", id="posttitle" })
+        @Html.ValidationMessageFor(model => model.PostTitle, "", new { @class = "text-danger" })
     </div>
-</div>
+    <div class="row">
+        <label for="postbody" class="control-label">Post Body:</label>
+        @Html.TextAreaFor(model => model.PostBody, new { @class="form-control", id="postbody" })
+        @Html.ValidationMessageFor(model => model.PostBody, "", new { @class = "text-danger" })
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-xs-6">
+            <button id="btn-Update-Post" class="btn btn-primary" type="submit">
+                <span class="glyphicon glyphicon-user"></span> Submit
+            </button>
+        </div>
+    </div>
 }
