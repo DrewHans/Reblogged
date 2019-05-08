@@ -21,7 +21,9 @@ namespace Blog.MVC
                              reloadOnChange: true)
                 .AddEnvironmentVariables();
 
-            builder.AddUserSecrets<Startup>();
+            // builder.AddUserSecrets<Startup>();
+            // UserSecrets were removed to simplify demo setup.
+            // In a real production system, UserSecrets should be used to store sensitive info.
 
             Configuration = builder.Build();
         }

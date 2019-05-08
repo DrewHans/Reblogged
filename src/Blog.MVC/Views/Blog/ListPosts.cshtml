@@ -1,0 +1,27 @@
+@model BlogListPostsViewModel
+@{
+    ViewData["Title"] = "All Posts";
+}
+
+<!-- Blog breadcrumb navigation -->
+<br><br>
+<ol class="breadcrumb">
+  <li><a asp-area="" asp-controller="Blog" asp-action="Index">Blog Home</a></li>
+  <li class="active">View All Posts</li>
+</ol>
+
+<h2><span class="glyphicon glyphicon-list-alt"></span> @ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+@if(Model.ListOfPosts.Count ==0)
+{
+    <p>There are no posts in the system. You should make one! :)</p>
+}
+else
+{
+    <p>All posts:</p>
+    @foreach(BlogPostDTOModel post in Model.ListOfPosts)
+    {
+        <p><span class="glyphicon glyphicon-file"></span> @Html.ActionLink(@post.PostTitle, "GetPost", "Blog", new {id = @post.PostId}, null)</p>
+    }
+}

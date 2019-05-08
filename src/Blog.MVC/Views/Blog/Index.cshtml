@@ -1,0 +1,29 @@
+@model BlogIndexViewModel
+@{
+    ViewData["Title"] = "Blog Home";
+}
+
+<!-- Blog breadcrumb navigation -->
+<br><br>
+<ol class="breadcrumb">
+  <li class="active">Blog Home</li> | 
+  <a asp-area="" asp-controller="Blog" asp-action="AddPost">Add New Post</a> | 
+  <a asp-area="" asp-controller="Blog" asp-action="ListPosts">View All Posts</a> | 
+  <a asp-area="" asp-controller="Blog" asp-action="ListUsers">View All Users</a>
+</ol>
+
+<h2><span class="glyphicon glyphicon-home"></span> @ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+@if(Model.RecentPosts.Count ==0)
+{
+    <p>There are no recent posts available. You should make one! :)</p>
+}
+else
+{
+    <p>Recent posts:</p>
+    @foreach(BlogPostDTOModel post in Model.RecentPosts)
+    {
+        <p><span class="glyphicon glyphicon-file"></span> @Html.ActionLink(@post.PostTitle, "GetPost", "Blog", new {id = @post.PostId}, null)</p>
+    }
+}

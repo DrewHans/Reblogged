@@ -20,6 +20,8 @@ namespace Blog.Core
             {
                 response.User = bloguser;
                 response.SystemLoginSuccessful = true;
+                // our login protocol just checks to see if they have registered
+                // password management & authentication is beyond the scope of this project
             }
             return response;
         }

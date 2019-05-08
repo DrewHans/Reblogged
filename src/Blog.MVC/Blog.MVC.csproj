@@ -2,8 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <UserSecretsId>ddfd935e-c56a-4b2c-b9ec-430515d86ffb</UserSecretsId>
+    <!-- <UserSecretsId>ddfd935e-c56a-4b2c-b9ec-430515d86ffb</UserSecretsId> -->
+    <!-- UserSecrets were removed to simplify demo setup -->
     <!-- On Linux, usersecrets are found in ~/.microsoft/usersecrets/ -->
+    <!-- On Windows 7, usersecrets are found in C:\Users\<your username>\AppData\Roaming\Microsoft\UserSecrets -->
   </PropertyGroup>
 
   <ItemGroup>

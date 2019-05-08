@@ -54,17 +54,19 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
     │  │  ├─ Models/             # MVC models
     │  │  ├─ Presenters/         # Used to simplify passing data from controllers to views
     │  │  ├─ Views/              # MVC views
-    │  │  ├─ wwwroot/            # Web assests (css, js, images, libs) live here
+    │  │  ├─ wwwroot/            # Static web assests (css, js, images, libs) live here
     │  │  │
     │  │  ├─ Blog.MVC.csproj
     │  │  ├─ BlogCoreSetup.cs    # Simple class to handle initializing Blog.Core classes
     │  │  ├─ Program.cs
     │  │  └─ startup.cs
     │  │
-    │  └─ Blog.MVC.Test/         # Blog.MVC testing logic lives here
-    │     ├─ IntegrationTests/   # Integration Tests live here (no unit tests)
-    │     │
-    │     └─ Blog.MVC.Test.csproj
+    │  ├─ Blog.MVC.Test/         # Blog.MVC testing logic lives here
+    │  │  ├─ IntegrationTests/   # Integration Tests live here (no unit tests)
+    │  │  │
+    │  │  └─ Blog.MVC.Test.csproj
+    │  │
+    │  └─ Blog.Secrets/          # UserSecrets (see 'Setting Up UserSecrets' below)
     │
     ├─ LICENSE
     └─ README.md
@@ -79,3 +81,26 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 2. Open the terminal in Visual Studio Code & type 'cd ./src/Blog.MVC/' and press enter.
 3. Now, still in the terminal, type 'dotnet run' & press enter.
 4. Open your web browser & go to 'http://localhost:5000/'
+
+### Setting Up UserSecrets (optional)
+1. Using Visual Studio Code's explorer, expand src/Blog.Secrets.
+2. Right click on the UserSecrets folder and click 'Reveal in Explorer'.
+3. Copy the folder contents of UserSecrets to the appropriate directory below:
+* On Windows: 'C:\Users\<your_username>\AppData\Roaming\Microsoft\UserSecrets\'
+* On Linux: '~/.microsoft/usersecrets/'
+4. Go inside the folder you just copied and open the secrets.json file.
+5. Update the paths in secrets.json. These paths can look different depending on your operating system & file structure.
+* On Linux it may look like:
+  * '~/Desktop/Reblogged/src/Blog.Database/FileDB/blogposts.json'
+  * '~/Desktop/Reblogged/src/Blog.Database/FileDB/blogusers.json'
+* On Windows it may look like:
+  * 'C:\\Users\\your_username\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogposts.json'
+  * 'C:\\Users\\your_username\\Desktop\\Reblogged\\src\\Blog.Database\\FileDB\\blogusers.json'
+  6. Remove the two filedataaccess entries in 'Reblogged/src/Blog.MVC/appsettings.json'.
+  7. Go to 'Reblogged/src/Blog.MVC/Startup.cs' and uncomment line 24.
+  8. Go to Blog.MVC.csproj and uncomment the '<UserSecretsId>' entry on line 5.
+  9. Repeat step 8 for the Blog.MVC.Test.csproj file in 'Reblogged/src/Blog.MVC.Test/'.
+  10. Make sure you have followed the steps listed above in 'Running the MVC Web App'.
+  11. Confirm that new users can register & login (this means the MVC app is able to access the configuration key/values in UserSecrets).
+
+Note: Adding UserSecrets to public version control is a very bad idea. It is only done here to simplify setting up this project for demos. Never do this in a real production system! Protect sensitive information!

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Blog.MVC
 {
-    public class BlogPostViewModel
+    public class BlogPostDTOModel
     {
         public Guid AuthorId { get; set; }
 
