@@ -2,33 +2,36 @@
 @{
     ViewData["Title"] = "Edit Blog Post";
 }
-<h2>@ViewData["Title"]</h2>
+
+<!-- Blog breadcrumb navigation -->
+<br><br>
+<ol class="breadcrumb">
+  <li><a asp-area="" asp-controller="Blog" asp-action="Index">Blog Home</a></li>
+  <li> @Html.ActionLink("View Post", "GetPost", "Blog", new {id = @Model.PostId}, null) </li>
+  <li class="active">Edit Post</li>
+</ol>
+
+<h2><span class="glyphicon glyphicon-erase"></span> @ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
-<p>
-    <a asp-area="" asp-controller="Blog" asp-action="Index">Blog Home</a>
-</p>
+
 <br>
 @using (Html.BeginForm("UpdatePost", "Blog", FormMethod.Post, new { @class= "form-horizontal", id="update-blog-post-form" }))
 {
     @Html.HiddenFor(model => model.AuthorId)
     @Html.HiddenFor(model => model.PostId)
 
-    <div class="row">
-        <label for="posttitle" class="control-label">Post Title:</label>
-        @Html.TextBoxFor(model => model.PostTitle, new { @class="form-control", id="posttitle" })
-        @Html.ValidationMessageFor(model => model.PostTitle, "", new { @class = "text-danger" })
-    </div>
-    <div class="row">
-        <label for="postbody" class="control-label">Post Body:</label>
-        @Html.TextAreaFor(model => model.PostBody, new { @class="form-control", id="postbody" })
-        @Html.ValidationMessageFor(model => model.PostBody, "", new { @class = "text-danger" })
-    </div>
+
+    <label for="posttitle" class="control-label">Post Title:</label>
+    @Html.TextBoxFor(model => model.PostTitle, new { @class="form-control", id="posttitle" })
+    @Html.ValidationMessageFor(model => model.PostTitle, "", new { @class = "text-danger" })
+
+    <label for="postbody" class="control-label">Post Body:</label>
+    @Html.TextAreaFor(model => model.PostBody, new { @class="form-control", id="postbody" })
+    @Html.ValidationMessageFor(model => model.PostBody, "", new { @class = "text-danger" })
+
     <br>
-    <div class="row">
-        <div class="col-xs-6">
-            <button id="btn-Update-Post" class="btn btn-primary" type="submit">
-                <span class="glyphicon glyphicon-user"></span> Submit
-            </button>
-        </div>
-    </div>
+
+    <button id="btn-Update-Post" class="btn btn-primary" type="submit">
+        <span class="glyphicon glyphicon-pencil"></span> Update Post
+    </button>
 }

@@ -17,7 +17,7 @@ namespace Blog.Core
             var response = new ListBlogPostsResponse();
             try
             {
-                response.ListOfPosts = _blogPostRepo.List().OrderBy(x => x.TimeCreated).ToList();
+                response.ListOfPosts = _blogPostRepo.List().OrderByDescending(x => x.TimeCreated).ToList();
                 response.RequestSuccessful = true;
             }
             catch (Exception)
