@@ -16,6 +16,7 @@ namespace Blog.MVC.Controllers
         private readonly IDeleteBlogPostInteractor _deleteBlogPostInteractor;
         private readonly IEditBlogPostInteractor _editBlogPostInteractor;
         private readonly IGetBlogPostInteractor _getBlogPostInteractor;
+        private readonly IGetBlogUserInteractor _getBlogUserInteractor;
         private readonly IListBlogPostsInteractor _listBlogPostsInteractor;
         private readonly IListBlogUsersInteractor _listBlogUsersInteractor;
         private readonly IListRecentBlogPostsInteractor _listRecentBlogPostsInteractor;
@@ -24,6 +25,7 @@ namespace Blog.MVC.Controllers
             IDeleteBlogPostInteractor deleteBlogPostInteractor,
             IEditBlogPostInteractor editBlogPostInteractor,
             IGetBlogPostInteractor getBlogPostInteractor,
+            IGetBlogUserInteractor getBlogUserInteractor,
             IListBlogPostsInteractor listBlogPostsInteractor,
             IListBlogUsersInteractor listBlogUsersInteractor,
             IListRecentBlogPostsInteractor listRecentBlogPostsInteractor)
@@ -32,6 +34,7 @@ namespace Blog.MVC.Controllers
             _deleteBlogPostInteractor = deleteBlogPostInteractor;
             _editBlogPostInteractor = editBlogPostInteractor;
             _getBlogPostInteractor = getBlogPostInteractor;
+            _getBlogUserInteractor = getBlogUserInteractor;
             _listBlogPostsInteractor = listBlogPostsInteractor;
             _listBlogUsersInteractor = listBlogUsersInteractor;
             _listRecentBlogPostsInteractor = listRecentBlogPostsInteractor;
@@ -89,8 +92,15 @@ namespace Blog.MVC.Controllers
         public IActionResult GetUser(string id)
         {
             var userid = Guid.Parse(id);
-            //TODO: implement GetUser like GetPost method above
-            return View();
+            var request = new GetBlogUserRequest { UserId = userid };
+            var response = _getBlogUserInteractor.GetBlogUser(request);
+            var viewmodel = new BlogGetUserViewModel();
+            if (response.RequestSuccessful)
+            {
+                viewmodel.ListOfPosts = MapListOfBlogPostToListOfDTOModel(response.ListOfPosts);
+                viewmodel.User = MapBlogUserToDTOModel(response.User);
+            }
+            return View(viewmodel);
         }
 
         [HttpGet("posts")] // displays page with a list of all posts
