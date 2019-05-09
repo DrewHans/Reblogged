@@ -16,6 +16,8 @@ namespace Blog.MVC.Test
 
     public class ConfigurationTests
     {
+        // Note: this test suite requires UserSecrets to be set up.
+        //       Follow the 'Setting Up UserSecrets' instructions in Reblogged/README.md
         [Fact]
         public void InitFakeStartup_DefaultConstructorCall_ReturnsInstance()
         {
